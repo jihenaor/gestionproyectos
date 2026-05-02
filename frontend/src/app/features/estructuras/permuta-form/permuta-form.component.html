@@ -1,0 +1,125 @@
+<div class="estructura-form">
+  <header class="estructura-form__header">
+    <h2 class="estructura-form__title">P-040A: Permuta de Bienes Inmuebles</h2>
+    <p class="estructura-form__description">
+      Diligencie la información de la escritura de permuta de bienes inmuebles.
+    </p>
+  </header>
+
+  <form class="estructura-form__form">
+    <div class="form-row">
+      <app-form-field
+        label="Número de Escritura"
+        fieldId="numEscritura"
+        [isRequired]="true"
+        description="Número de la escritura pública">
+        <input
+          type="text"
+          id="numEscritura"
+          class="form-input"
+          [(ngModel)]="datos.numEscritura"
+          name="numEscritura"
+          maxlength="50" />
+      </app-form-field>
+
+      <app-form-field
+        label="Fecha de Escritura"
+        fieldId="fechaEscritura"
+        [isRequired]="true"
+        description="Formato: AAAAMMDD"
+        formatExample="20241231">
+        <input
+          type="text"
+          id="fechaEscritura"
+          class="form-input"
+          [(ngModel)]="datos.fechaEscritura"
+          name="fechaEscritura"
+          maxlength="8"
+          placeholder="AAAAMMDD" />
+      </app-form-field>
+    </div>
+
+    <div class="form-row">
+      <app-form-field
+        label="Bien Entregado"
+        fieldId="bienEntregado"
+        [isRequired]="true"
+        description="Descripción del bien inmueble entregado">
+        <input
+          type="text"
+          id="bienEntregado"
+          class="form-input"
+          [(ngModel)]="datos.bienEntregado"
+          name="bienEntregado"
+          maxlength="200" />
+      </app-form-field>
+
+      <app-form-field
+        label="Bien Recibido"
+        fieldId="bienRecibido"
+        [isRequired]="true"
+        description="Descripción del bien inmueble recibido">
+        <input
+          type="text"
+          id="bienRecibido"
+          class="form-input"
+          [(ngModel)]="datos.bienRecibido"
+          name="bienRecibido"
+          maxlength="200" />
+      </app-form-field>
+    </div>
+
+    <div class="form-row">
+      <app-form-field
+        label="Valor Bien Entregado"
+        fieldId="valorBienEntregado"
+        [isRequired]="true"
+        description="Valor del bien entregado">
+        <input
+          type="number"
+          id="valorBienEntregado"
+          class="form-input"
+          [(ngModel)]="datos.valorBienEntregado"
+          name="valorBienEntregado"
+          min="0" />
+      </app-form-field>
+
+      <app-form-field
+        label="Valor Bien Recibido"
+        fieldId="valorBienRecibido"
+        [isRequired]="true"
+        description="Valor del bien recibido">
+        <input
+          type="number"
+          id="valorBienRecibido"
+          class="form-input"
+          [(ngModel)]="datos.valorBienRecibido"
+          name="valorBienRecibido"
+          min="0" />
+      </app-form-field>
+    </div>
+
+    <app-form-field
+      label="Fecha Cert. Tradición y Libertad"
+      fieldId="fechaCertTradicionLibertad"
+      [isRequired]="true"
+      description="Formato: AAAAMMDD"
+      formatExample="20241231">
+      <input
+        type="text"
+        id="fechaCertTradicionLibertad"
+        class="form-input"
+        [(ngModel)]="datos.fechaCertTradicionLibertad"
+        name="fechaCertTradicionLibertad"
+        maxlength="8"
+        placeholder="AAAAMMDD" />
+    </app-form-field>
+  </form>
+
+  <div class="estructura-form__actions">
+    <app-button variant="secondary" type="button" (click)="cancelar()">Cancelar</app-button>
+    <app-button variant="primary" type="button" (click)="guardar()" [loading]="guardando()">
+      Guardar P-040A
+    </app-button>
+  </div>
+</div>

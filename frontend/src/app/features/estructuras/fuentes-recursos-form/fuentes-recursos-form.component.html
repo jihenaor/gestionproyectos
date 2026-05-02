@@ -1,0 +1,92 @@
+<div class="estructura-form">
+  <header class="estructura-form__header">
+    <h2 class="estructura-form__title">P-004C: Estructura de Fuentes de Recursos</h2>
+    <p class="estructura-form__description">
+      Diligencie las fuentes de recursos para el financiamiento del proyecto.
+    </p>
+  </header>
+
+  <form class="estructura-form__form">
+    @for (recurso of datos.recursos; track $index; let i = $index) {
+      <div class="recurso-row">
+        <div class="recurso-header">
+          <span class="recurso-numero">Fuente {{ i + 1 }}</span>
+          @if (datos.recursos.length > 1) {
+            <button type="button" class="recurso-eliminar" (click)="eliminarRecurso(i)">
+              ×
+            </button>
+          }
+        </div>
+
+        <div class="form-row--three">
+          <app-form-field
+            label="Tipo de Fuente"
+            [fieldId]="'tipo-' + i"
+            [isRequired]="true">
+            <select
+              [id]="'tipo-' + i"
+              class="form-select"
+              [(ngModel)]="recurso.tipo"
+              [name]="'tipo-' + i"
+              (change)="actualizarValorTotal()">
+              <option value="">Seleccione...</option>
+              @for (tipo of tiposFuente; track tipo.codigo) {
+                <option [value]="tipo.codigo">{{ tipo.nombre }}</option>
+              }
+            </select>
+          </app-form-field>
+
+          <app-form-field
+            label="Fuente Específica"
+            [fieldId]="'fuente-' + i"
+            [isRequired]="true"
+            description="Nombre de la entidad o fondo">
+            <input
+              type="text"
+              [id]="'fuente-' + i"
+              class="form-input"
+              [(ngModel)]="recurso.fuente"
+              [name]="'fuente-' + i"
+              maxlength="200" />
+          </app-form-field>
+
+          <app-form-field
+            label="Valor"
+            [fieldId]="'valor-' + i"
+            [isRequired]="true"
+            description="Sin puntos ni comas">
+            <input
+              type="number"
+              [id]="'valor-' + i"
+              class="form-input"
+              [(ngModel)]="recurso.valor"
+              [name]="'valor-' + i"
+              min="0"
+              step="1"
+              (input)="actualizarValorTotal()" />
+          </app-form-field>
+        </div>
+      </div>
+    }
+
+    <div class="recurso-actions">
+      <button type="button" class="btn-agregar" (click)="agregarRecurso()">
+        + Agregar Fuente
+      </button>
+    </div>
+  </form>
+
+  <div class="estructura-form__summary">
+    <div class="summary-item">
+      <span class="summary-label">Valor Total Fuentes:</span>
+      <span class="summary-value">{{ sumaValores | number }}</span>
+    </div>
+  </div>
+
+  <div class="estructura-form__actions">
+    <app-button variant="secondary" type="button" (click)="cancelar()">Cancelar</app-button>
+    <app-button variant="primary" type="button" (click)="guardar()" [loading]="guardando()">
+      Guardar P-004C
+    </app-button>
+  </div>
+</div>

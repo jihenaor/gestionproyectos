@@ -1,0 +1,66 @@
+# Java / Gradle
+backend/build/
+backend/.gradle/
+backend/*.class
+backend/*.jar
+backend/*.war
+backend/*.ear
+backend/*.log
+backend/.DS_Store
+**/target/**
+!backend/**/src/**/*.class
+
+# Spring Boot
+backend/*.pem
+backend/*.keystore
+backend/*.keystore
+
+# Angular
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/.Nx/
+frontend/.cache/
+frontend/coverage/
+frontend/*.tgz
+
+# IDE
+backend/.idea/
+backend/*.iml
+.vscode/
+backend/*.swp
+backend/*.swo
+.settings/
+backend/.project
+backend/.classpath
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Environment / Secrets
+.env
+.env.*
+*.env
+application-local.properties
+application-dev.properties
+application-prod.properties
+
+# Logs
+backend/*.log
+backend/logs/
+
+# XML files
+*.xml
+
+# Office files
+*.pdf
+*.xls
+*.xlsx
+*.csv
+
+# Compiled output
+*.js.map
+*.tsbuildinfo
+*.xsd
+backend/bin/

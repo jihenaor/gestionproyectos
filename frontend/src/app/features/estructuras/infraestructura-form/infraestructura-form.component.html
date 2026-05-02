@@ -1,0 +1,129 @@
+<div class="estructura-form">
+  <header class="estructura-form__header">
+    <h2 class="estructura-form__title">P-013A: Aspectos de Infraestructura</h2>
+    <p class="estructura-form__description">
+      Diligencie los aspectos relacionados con infraestructura del proyecto.
+      Los campos visibles dependerán de la modalidad de inversión seleccionada.
+    </p>
+  </header>
+
+  <form class="estructura-form__form">
+    @if (esInfraestructura) {
+      <div class="seccion">
+        <h3 class="seccion__titulo">Licencia de Construcción</h3>
+
+        <app-form-field
+          label="Estado de Licencia"
+          fieldId="licencia"
+          [isRequired]="true"
+          tableReference="Tabla 115">
+          <select
+            id="licencia"
+            class="form-select"
+            [(ngModel)]="datos.licenciaConstruccion"
+            name="licencia">
+            <option [ngValue]="1">1 - N.A.</option>
+            <option [ngValue]="2">2 - En trámite</option>
+            <option [ngValue]="3">3 - Expedida</option>
+          </select>
+        </app-form-field>
+
+        @if (datos.licenciaConstruccion !== 1) {
+          <div class="form-row">
+            <app-form-field
+              label="Número de Licencia"
+              fieldId="numLicencia"
+              [isRequired]="datos.licenciaConstruccion === 3"
+              description="Número del documento de licencia">
+              <input
+                type="text"
+                id="numLicencia"
+                class="form-input"
+                [(ngModel)]="datos.numLicencia"
+                name="numLicencia"
+                maxlength="50" />
+            </app-form-field>
+
+            <app-form-field
+              label="Fecha de Licencia"
+              fieldId="fechaLicencia"
+              [isRequired]="datos.licenciaConstruccion === 3"
+              formatExample="AAAAMMDD">
+              <input
+                type="text"
+                id="fechaLicencia"
+                class="form-input"
+                [(ngModel)]="datos.fechaLicencia"
+                name="fechaLicencia"
+                placeholder="20250315"
+                maxlength="8" />
+            </app-form-field>
+          </div>
+        }
+      </div>
+    }
+
+    @if (requiereDatosInterventoria) {
+      <div class="seccion">
+        <h3 class="seccion__titulo">Interventoría</h3>
+        <p class="seccion__descripcion">Tabla 203 - Tipo de Interventoría</p>
+
+        <app-form-field
+          label="Tipo de Interventoría"
+          fieldId="interventoria"
+          [isRequired]="true">
+          <select
+            id="interventoria"
+            class="form-select"
+            [(ngModel)]="datos.interventoria"
+            name="interventoria">
+            <option [ngValue]="1">1 - Interna</option>
+            <option [ngValue]="2">2 - Externa</option>
+          </select>
+        </app-form-field>
+
+        <div class="form-row">
+          <app-form-field
+            label="Número de Acta de Interventoría"
+            fieldId="numActaInterventoria"
+            description="Número del acta de interventoría">
+            <input
+              type="text"
+              id="numActaInterventoria"
+              class="form-input"
+              [(ngModel)]="datos.numActaInterventoria"
+              name="numActaInterventoria"
+              maxlength="50" />
+          </app-form-field>
+
+          <app-form-field
+            label="Fecha de Acta de Interventoría"
+            fieldId="fechaActaInterventoria"
+            formatExample="AAAAMMDD">
+            <input
+              type="text"
+              id="fechaActaInterventoria"
+              class="form-input"
+              [(ngModel)]="datos.fechaActaInterventoria"
+              name="fechaActaInterventoria"
+              placeholder="20250315"
+              maxlength="8" />
+          </app-form-field>
+        </div>
+      </div>
+    }
+
+    @if (!esInfraestructura && !requiereDatosInterventoria) {
+      <div class="estructura-form__info">
+        <span>ℹ️ Esta estructura aplica principalmente para proyectos de Infraestructura y Educación.</span>
+      </div>
+    }
+  </form>
+
+  <div class="estructura-form__actions">
+    <app-button variant="secondary" type="button" (click)="cancelar()">Cancelar</app-button>
+    <app-button variant="primary" type="button" (click)="guardar()" [loading]="guardando()">
+      Guardar P-013A
+    </app-button>
+  </div>
+</div>

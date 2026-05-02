@@ -1,0 +1,13 @@
+@import '../estructura-form.styles.css';
+
+.estructura-form {
+  max-width: 900px;
+}
+
+app-rich-text-editor {
+  display: block;
+}
+
+app-rich-text-editor .rich-editor {
+  min-height: 150px;
+}

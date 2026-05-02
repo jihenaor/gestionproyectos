@@ -1,0 +1,78 @@
+<div class="estructura-form">
+  <header class="estructura-form__header">
+    <h2 class="estructura-form__title">P-024A: Cartera por Edades</h2>
+    <p class="estructura-form__description">
+      Diligencie la información de cartera por edades del proyecto.
+    </p>
+  </header>
+
+  <form class="estructura-form__form">
+    <app-form-field
+      label="Edad de Cartera"
+      fieldId="edadCartera"
+      [isRequired]="true"
+      tableReference="Rangos de Edad de Cartera">
+      <select
+        id="edadCartera"
+        class="form-select"
+        [(ngModel)]="datos.edadCartera"
+        name="edadCartera">
+        <option value="">Seleccione...</option>
+        @for (opt of edadCarteraOptions; track opt.codigo) {
+          <option [value]="opt.codigo">{{ opt.nombre }}</option>
+        }
+      </select>
+    </app-form-field>
+
+    <div class="form-row">
+      <app-form-field
+        label="Número de Operaciones"
+        fieldId="numeroOperaciones"
+        [isRequired]="true"
+        description="Cantidad de operaciones en esta edad">
+        <input
+          type="number"
+          id="numeroOperaciones"
+          class="form-input"
+          [(ngModel)]="datos.numeroOperaciones"
+          name="numeroOperaciones"
+          min="0" />
+      </app-form-field>
+
+      <app-form-field
+        label="Valor Cartera"
+        fieldId="valorCartera"
+        [isRequired]="true"
+        description="Valor total de la cartera">
+        <input
+          type="number"
+          id="valorCartera"
+          class="form-input"
+          [(ngModel)]="datos.valorCartera"
+          name="valorCartera"
+          min="0" />
+      </app-form-field>
+    </div>
+
+    <app-form-field
+      label="Provisión"
+      fieldId="provision"
+      [isRequired]="true"
+      description="Valor de la provisión">
+      <input
+        type="number"
+        id="provision"
+        class="form-input"
+        [(ngModel)]="datos.provision"
+        name="provision"
+        min="0" />
+    </app-form-field>
+  </form>
+
+  <div class="estructura-form__actions">
+    <app-button variant="secondary" type="button" (click)="cancelar()">Cancelar</app-button>
+    <app-button variant="primary" type="button" (click)="guardar()" [loading]="guardando()">
+      Guardar P-024A
+    </app-button>
+  </div>
+</div>

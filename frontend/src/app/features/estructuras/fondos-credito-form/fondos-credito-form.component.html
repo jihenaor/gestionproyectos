@@ -1,0 +1,78 @@
+<div class="estructura-form">
+  <header class="estructura-form__header">
+    <h2 class="estructura-form__title">P-023A: Fondos y Crédito</h2>
+    <p class="estructura-form__description">
+      Diligencie la información relacionada con fondos y créditos del proyecto.
+    </p>
+  </header>
+
+  <form class="estructura-form__form">
+    <app-form-field
+      label="Tipo de Crédito"
+      fieldId="tipoCredito"
+      [isRequired]="true"
+      tableReference="Tipos de Crédito">
+      <select
+        id="tipoCredito"
+        class="form-select"
+        [(ngModel)]="datos.tipoCredito"
+        name="tipoCredito">
+        <option value="">Seleccione...</option>
+        @for (opt of tipoCreditoOptions; track opt.codigo) {
+          <option [value]="opt.codigo">{{ opt.nombre }}</option>
+        }
+      </select>
+    </app-form-field>
+
+    <div class="form-row">
+      <app-form-field
+        label="Número de Créditos"
+        fieldId="numeroCreditos"
+        [isRequired]="true"
+        description="Cantidad de operaciones de crédito">
+        <input
+          type="number"
+          id="numeroCreditos"
+          class="form-input"
+          [(ngModel)]="datos.numeroCreditos"
+          name="numeroCreditos"
+          min="0" />
+      </app-form-field>
+
+      <app-form-field
+        label="Valor Total Créditos"
+        fieldId="valorTotalCreditos"
+        [isRequired]="true"
+        description="Valor total de los créditos">
+        <input
+          type="number"
+          id="valorTotalCreditos"
+          class="form-input"
+          [(ngModel)]="datos.valorTotalCreditos"
+          name="valorTotalCreditos"
+          min="0" />
+      </app-form-field>
+    </div>
+
+    <app-form-field
+      label="Plazo Promedio (Meses)"
+      fieldId="plazoPromedio"
+      [isRequired]="true"
+      description="Plazo promedio en meses">
+      <input
+        type="number"
+        id="plazoPromedio"
+        class="form-input"
+        [(ngModel)]="datos.plazoPromedio"
+        name="plazoPromedio"
+        min="0" />
+    </app-form-field>
+  </form>
+
+  <div class="estructura-form__actions">
+    <app-button variant="secondary" type="button" (click)="cancelar()">Cancelar</app-button>
+    <app-button variant="primary" type="button" (click)="guardar()" [loading]="guardando()">
+      Guardar P-023A
+    </app-button>
+  </div>
+</div>

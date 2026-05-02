@@ -1,0 +1,187 @@
+<div class="estructura-form">
+  <header class="estructura-form__header">
+    <h2 class="estructura-form__title">P-001A: Estructuras Generales Proyectos de Inversión</h2>
+    <p class="estructura-form__description">
+      Diligencie los datos generales del proyecto. Todos los campos marcados con * son obligatorios.
+    </p>
+  </header>
+
+  <form class="estructura-form__form">
+    <div class="form-row">
+      <app-form-field
+        label="Código del Proyecto"
+        fieldId="codigo"
+        [isRequired]="true"
+        description="Código único del proyecto"
+        formatExample="CCFXXX-XX-XXXXX">
+        <input
+          type="text"
+          id="codigo"
+          class="form-input"
+          [(ngModel)]="datos.codigoProyecto"
+          disabled
+          maxlength="15" />
+      </app-form-field>
+
+      <app-form-field
+        label="Nombre del Proyecto"
+        fieldId="nombre"
+        [isRequired]="true"
+        description="Nombre o descripción del proyecto"
+        [maxLength]="200">
+        <input
+          type="text"
+          id="nombre"
+          class="form-input"
+          [(ngModel)]="datos.nombreProyecto"
+          maxlength="200" />
+      </app-form-field>
+    </div>
+
+    <div class="form-row">
+      <app-form-field
+        label="Modalidad de Inversión"
+        fieldId="modalidad"
+        [isRequired]="true"
+        tableReference="Tabla 32">
+        <select
+          id="modalidad"
+          class="form-select"
+          [(ngModel)]="datos.modalidadInversion">
+          <option value="">Seleccione...</option>
+          <option value="INF">01 - Infraestructura</option>
+          <option value="FON">02 - Fondo de Crédito</option>
+          <option value="EDU">03 - Educación</option>
+          <option value="REC">04 - Recreación</option>
+          <option value="OTR">05 - Otros</option>
+        </select>
+      </app-form-field>
+
+      <app-form-field
+        label="Valor Total del Proyecto"
+        fieldId="valorTotal"
+        [isRequired]="true"
+        description="Sin puntos ni comas"
+        formatExample="500000000">
+        <input
+          type="number"
+          id="valorTotal"
+          class="form-input"
+          [(ngModel)]="datos.valorTotalProyecto" />
+      </app-form-field>
+    </div>
+
+    <div class="form-row">
+      <app-form-field
+        label="Valor Aprobado Vigencia"
+        fieldId="valorAprobado"
+        [isRequired]="true">
+        <input
+          type="number"
+          id="valorAprobado"
+          class="form-input"
+          [(ngModel)]="datos.valorAprobadoVigencia" />
+      </app-form-field>
+
+      <app-form-field
+        label="Resolución AEI"
+        fieldId="resolucion"
+        [isRequired]="true">
+        <select
+          id="resolucion"
+          class="form-select"
+          [(ngModel)]="datos.resolucionAEI">
+          <option [ngValue]="1">Sí - Cuenta con resolución AEI</option>
+          <option [ngValue]="2">No - No requiere AEI</option>
+        </select>
+      </app-form-field>
+    </div>
+
+    <app-form-field
+      label="Justificación del Proyecto"
+      fieldId="justificacion"
+      fieldType="custom"
+      [isRequired]="true"
+      description="Describe la necesidad y beneficios del proyecto. Puede usar listas y viñetas."
+      [maxLength]="4000"
+      [showCharCount]="true">
+      <app-rich-text-editor
+        [(ngModel)]="datos.justificacion"
+        [maxLength]="4000"
+        [showCharCount]="true"
+        [verticalResize]="true"
+        placeholder="Describa la justificación del proyecto..." />
+    </app-form-field>
+
+    <app-form-field
+      label="Objetivos del Proyecto"
+      fieldId="objetivos"
+      fieldType="custom"
+      [isRequired]="true"
+      description="Liste los objetivos específicos del proyecto"
+      [maxLength]="2000">
+      <app-rich-text-editor
+        [(ngModel)]="datos.objetivos"
+        [maxLength]="2000"
+        [showCharCount]="true"
+        placeholder="Liste los objetivos específicos del proyecto..." />
+    </app-form-field>
+
+    <div class="form-row">
+      <app-form-field
+        label="Número de Acta"
+        fieldId="numActa"
+        description="Número de acta del Consejo Directivo">
+        <input
+          type="text"
+          id="numActa"
+          class="form-input"
+          [(ngModel)]="datos.numActa" />
+      </app-form-field>
+
+      <app-form-field
+        label="Número de Consejeros"
+        fieldId="numConsejeros"
+        [isRequired]="true"
+        description="Mínimo 7 para aprobación ordinaria, 1 si es resolución AEI">
+        <input
+          type="number"
+          id="numConsejeros"
+          class="form-input"
+          [(ngModel)]="datos.numConsejeros" />
+      </app-form-field>
+    </div>
+
+    <div class="form-row">
+      <app-form-field
+        label="Tiempo de Recuperación (meses)"
+        fieldId="tiempoRec"
+        description="Plazo estimado para recuperar la inversión">
+        <input
+          type="number"
+          id="tiempoRec"
+          class="form-input"
+          [(ngModel)]="datos.tiempoRecuperacion" />
+      </app-form-field>
+
+      <app-form-field
+        label="Tasa de Descuento"
+        fieldId="tasa"
+        formatExample="12.50">
+        <input
+          type="text"
+          id="tasa"
+          class="form-input"
+          [(ngModel)]="datos.tasaDescuento"
+          placeholder="12.50" />
+      </app-form-field>
+    </div>
+  </form>
+
+  <div class="estructura-form__actions">
+    <app-button variant="secondary" type="button" (click)="cancelar()">Cancelar</app-button>
+    <app-button variant="primary" type="button" (click)="guardar()" [loading]="guardando()">
+      Guardar P-001A
+    </app-button>
+  </div>
+</div>

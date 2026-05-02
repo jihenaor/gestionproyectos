@@ -1,0 +1,95 @@
+<div class="estructura-form">
+  <header class="estructura-form__header">
+    <h2 class="estructura-form__title">P-031A: Comodato de Bienes Inmuebles</h2>
+    <p class="estructura-form__description">
+      Diligencie la información del convenio de comodato de bienes inmuebles.
+    </p>
+  </header>
+
+  <form class="estructura-form__form">
+    <div class="form-row">
+      <app-form-field
+        label="Número de Convenio"
+        fieldId="numConvenio"
+        [isRequired]="true"
+        description="Número del convenio de comodato">
+        <input
+          type="text"
+          id="numConvenio"
+          class="form-input"
+          [(ngModel)]="datos.numConvenio"
+          name="numConvenio"
+          maxlength="50" />
+      </app-form-field>
+
+      <app-form-field
+        label="Fecha de Convenio"
+        fieldId="fechaConvenio"
+        [isRequired]="true"
+        description="Formato: AAAAMMDD"
+        formatExample="20241231">
+        <input
+          type="text"
+          id="fechaConvenio"
+          class="form-input"
+          [(ngModel)]="datos.fechaConvenio"
+          name="fechaConvenio"
+          maxlength="8"
+          placeholder="AAAAMMDD" />
+      </app-form-field>
+    </div>
+
+    <app-form-field
+      label="Bien en Comodato"
+      fieldId="bienComodato"
+      [isRequired]="true"
+      description="Descripción del bien inmueble en comodato">
+      <input
+        type="text"
+        id="bienComodato"
+        class="form-input"
+        [(ngModel)]="datos.bienComodato"
+        name="bienComodato"
+        maxlength="200" />
+    </app-form-field>
+
+    <div class="form-row">
+      <app-form-field
+        label="Plazo (Meses)"
+        fieldId="plazoMeses"
+        [isRequired]="true"
+        description="Plazo del comodato en meses">
+        <input
+          type="number"
+          id="plazoMeses"
+          class="form-input"
+          [(ngModel)]="datos.plazoMeses"
+          name="plazoMeses"
+          min="0" />
+      </app-form-field>
+
+      <app-form-field
+        label="Fecha Cert. Tradición y Libertad"
+        fieldId="fechaCertTradicionLibertad"
+        [isRequired]="true"
+        description="Formato: AAAAMMDD"
+        formatExample="20241231">
+        <input
+          type="text"
+          id="fechaCertTradicionLibertad"
+          class="form-input"
+          [(ngModel)]="datos.fechaCertTradicionLibertad"
+          name="fechaCertTradicionLibertad"
+          maxlength="8"
+          placeholder="AAAAMMDD" />
+      </app-form-field>
+    </div>
+  </form>
+
+  <div class="estructura-form__actions">
+    <app-button variant="secondary" type="button" (click)="cancelar()">Cancelar</app-button>
+    <app-button variant="primary" type="button" (click)="guardar()" [loading]="guardando()">
+      Guardar P-031A
+    </app-button>
+  </div>
+</div>

@@ -1,0 +1,80 @@
+<div class="estructura-form">
+  <header class="estructura-form__header">
+    <h2 class="estructura-form__title">P-003A: Localización del Proyecto</h2>
+    <p class="estructura-form__description">
+      Diligencie la información de ubicación geográfica del proyecto.
+    </p>
+  </header>
+
+  <form class="estructura-form__form">
+    <div class="form-row">
+      <app-form-field
+        label="Departamento"
+        fieldId="departamento"
+        [isRequired]="true"
+        tableReference="División Política Colombia">
+        <select
+          id="departamento"
+          class="form-select"
+          [(ngModel)]="datos.departamento"
+          name="departamento">
+          <option value="">Seleccione...</option>
+          @for (dept of departamentos; track dept.codigo) {
+            <option [value]="dept.codigo">{{ dept.nombre }}</option>
+          }
+        </select>
+      </app-form-field>
+
+      <app-form-field
+        label="Municipio / Ciudad"
+        fieldId="municipio"
+        [isRequired]="true"
+        description="Nombre del municipio o ciudad">
+        <input
+          type="text"
+          id="municipio"
+          class="form-input"
+          [(ngModel)]="datos.municipio"
+          name="municipio"
+          maxlength="100" />
+      </app-form-field>
+    </div>
+
+    <app-form-field
+      label="Dirección"
+      fieldId="direccion"
+      [isRequired]="true"
+      description="Dirección completa del proyecto">
+      <input
+        type="text"
+        id="direccion"
+        class="form-input"
+        [(ngModel)]="datos.direccion"
+        name="direccion"
+        maxlength="200"
+        placeholder="Calle 10 # 20-30, Barrio Central" />
+    </app-form-field>
+
+    <app-form-field
+      label="Coordenadas Geográficas"
+      fieldId="coordenadas"
+      description="Formato: Latitud,Longitud (ej: 4.6097,-74.0817)"
+      formatExample="4.6097,-74.0817">
+      <input
+        type="text"
+        id="coordenadas"
+        class="form-input"
+        [(ngModel)]="datos.coordenadas"
+        name="coordenadas"
+        maxlength="50"
+        placeholder="4.6097,-74.0817" />
+    </app-form-field>
+  </form>
+
+  <div class="estructura-form__actions">
+    <app-button variant="secondary" type="button" (click)="cancelar()">Cancelar</app-button>
+    <app-button variant="primary" type="button" (click)="guardar()" [loading]="guardando()">
+      Guardar P-003A
+    </app-button>
+  </div>
+</div>

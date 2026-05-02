@@ -1,0 +1,95 @@
+<div class="estructura-form">
+  <header class="estructura-form__header">
+    <h2 class="estructura-form__title">P-034A: Compra de Bienes Inmuebles</h2>
+    <p class="estructura-form__description">
+      Diligencie la información de la escritura de compra de bienes inmuebles.
+    </p>
+  </header>
+
+  <form class="estructura-form__form">
+    <div class="form-row">
+      <app-form-field
+        label="Número de Escritura"
+        fieldId="numEscritura"
+        [isRequired]="true"
+        description="Número de la escritura pública">
+        <input
+          type="text"
+          id="numEscritura"
+          class="form-input"
+          [(ngModel)]="datos.numEscritura"
+          name="numEscritura"
+          maxlength="50" />
+      </app-form-field>
+
+      <app-form-field
+        label="Fecha de Escritura"
+        fieldId="fechaEscritura"
+        [isRequired]="true"
+        description="Formato: AAAAMMDD"
+        formatExample="20241231">
+        <input
+          type="text"
+          id="fechaEscritura"
+          class="form-input"
+          [(ngModel)]="datos.fechaEscritura"
+          name="fechaEscritura"
+          maxlength="8"
+          placeholder="AAAAMMDD" />
+      </app-form-field>
+    </div>
+
+    <app-form-field
+      label="Bien Comprado"
+      fieldId="bienComprado"
+      [isRequired]="true"
+      description="Descripción del bien inmueble comprado">
+      <input
+        type="text"
+        id="bienComprado"
+        class="form-input"
+        [(ngModel)]="datos.bienComprado"
+        name="bienComprado"
+        maxlength="200" />
+    </app-form-field>
+
+    <div class="form-row">
+      <app-form-field
+        label="Valor de Compra"
+        fieldId="valorCompra"
+        [isRequired]="true"
+        description="Valor total de la compra">
+        <input
+          type="number"
+          id="valorCompra"
+          class="form-input"
+          [(ngModel)]="datos.valorCompra"
+          name="valorCompra"
+          min="0" />
+      </app-form-field>
+
+      <app-form-field
+        label="Fecha Cert. Tradición y Libertad"
+        fieldId="fechaCertTradicionLibertad"
+        [isRequired]="true"
+        description="Formato: AAAAMMDD"
+        formatExample="20241231">
+        <input
+          type="text"
+          id="fechaCertTradicionLibertad"
+          class="form-input"
+          [(ngModel)]="datos.fechaCertTradicionLibertad"
+          name="fechaCertTradicionLibertad"
+          maxlength="8"
+          placeholder="AAAAMMDD" />
+      </app-form-field>
+    </div>
+  </form>
+
+  <div class="estructura-form__actions">
+    <app-button variant="secondary" type="button" (click)="cancelar()">Cancelar</app-button>
+    <app-button variant="primary" type="button" (click)="guardar()" [loading]="guardando()">
+      Guardar P-034A
+    </app-button>
+  </div>
+</div>

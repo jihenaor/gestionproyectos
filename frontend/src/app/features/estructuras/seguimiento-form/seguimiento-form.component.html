@@ -1,0 +1,80 @@
+<div class="estructura-form">
+  <header class="estructura-form__header">
+    <h2 class="estructura-form__title">P-012A: Seguimiento del Proyecto</h2>
+    <p class="estructura-form__description">
+      Diligencie la información de seguimiento y avance del proyecto.
+    </p>
+  </header>
+
+  <form class="estructura-form__form">
+    <div class="form-row">
+      <app-form-field
+        label="Estado"
+        fieldId="estado"
+        [isRequired]="true"
+        tableReference="Estados del Proyecto">
+        <select
+          id="estado"
+          class="form-select"
+          [(ngModel)]="datos.estado"
+          name="estado">
+          <option value="">Seleccione...</option>
+          @for (opt of estadoOptions; track opt.codigo) {
+            <option [value]="opt.codigo">{{ opt.nombre }}</option>
+          }
+        </select>
+      </app-form-field>
+
+      <app-form-field
+        label="Avance (%)"
+        fieldId="avancePorcentaje"
+        [isRequired]="true"
+        description="Porcentaje de avance (0-100)">
+        <input
+          type="number"
+          id="avancePorcentaje"
+          class="form-input"
+          [(ngModel)]="datos.avancePorcentaje"
+          name="avancePorcentaje"
+          min="0"
+          max="100" />
+      </app-form-field>
+    </div>
+
+    <app-form-field
+      label="Fecha de Seguimiento"
+      fieldId="fechaSeguimiento"
+      [isRequired]="true"
+      description="Formato: AAAAMMDD"
+      formatExample="20241231">
+      <input
+        type="text"
+        id="fechaSeguimiento"
+        class="form-input"
+        [(ngModel)]="datos.fechaSeguimiento"
+        name="fechaSeguimiento"
+        maxlength="8"
+        placeholder="AAAAMMDD" />
+    </app-form-field>
+
+    <app-form-field
+      label="Observaciones"
+      fieldId="observaciones"
+      description="Observaciones adicionales del seguimiento">
+      <textarea
+        id="observaciones"
+        class="form-textarea"
+        [(ngModel)]="datos.observaciones"
+        name="observaciones"
+        rows="4"
+        maxlength="500"></textarea>
+    </app-form-field>
+  </form>
+
+  <div class="estructura-form__actions">
+    <app-button variant="secondary" type="button" (click)="cancelar()">Cancelar</app-button>
+    <app-button variant="primary" type="button" (click)="guardar()" [loading]="guardando()">
+      Guardar P-012A
+    </app-button>
+  </div>
+</div>
