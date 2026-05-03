@@ -55,7 +55,7 @@ def main() -> None:
     lines: list[str] = [
         "-- Datos de prueba (script aparte; no forma parte de CREAR_TABLAS.sql).",
         "-- Fuente XML: _data_BancodeProyectos-508723940_Files_CCF044P-001A022026.xml",
-        "-- Tablas: BDSUPER.GP_PROYECTOS, BDSUPER.GP_DATOS_GENERALES (tras CREAR_TABLAS.sql).",
+        "-- Legado: BDSUPER.GP_PROYECTOS, GP_DATOS_GENERALES. JPA: BDSUPER.PROYECTO (GET /api/v1/proyectos).",
         "-- Idempotente: borra por COD_PROYECTO antes de insertar.",
         "",
         "DELETE FROM BDSUPER.GP_DATOS_GENERALES",
@@ -112,7 +112,39 @@ def main() -> None:
     # typo fix ID_DATo_GENERAL -> ID_DATO_GENERAL
     ins2 = ins2.replace("ID_DATo_GENERAL", "ID_DATO_GENERAL")
 
-    lines.extend([ins, "", ins2, ""])
+    mod_inv = str(int(cols["MOD_DE_INVERSION"])).zfill(3)[:3]
+    nombre_jpa = esc(norm(txt("DESCRIPCION_PROYECTO"))[:200])
+    just_jpa = norm(txt("JUSTIFICACION"))[:4000]
+
+    ins_proyecto = f"""INSERT INTO BDSUPER.PROYECTO (
+    ID_PROYECTO, COD_PROYECTO, NOMBRE, MODALIDAD_INVERSION,
+    VALOR_TOTAL, VALOR_APROBADO, JUSTIFICACION, ESTADO,
+    FECHA_CREACION, ULTIMA_ACTUALIZACION, VERSION
+) VALUES (
+    {q(pid)}, {q(cols['COD_PROYECTO'])}, {q(nombre_jpa)}, {q(mod_inv)},
+    {int(cols['VAL_TOTAL_PROYECTO'])}, {int(cols['VALOR_APR_VIGENCIA'])},
+    {q(just_jpa)},
+    'BORRADOR',
+    CURRENT_DATE,
+    CURRENT_TIMESTAMP,
+    0
+);"""
+
+    lines.extend(
+        [
+            ins,
+            "",
+            ins2,
+            "",
+            "-- PROYECTO (JPA): listado REST /api/v1/proyectos",
+            "DELETE FROM BDSUPER.PROYECTO_ESTRUCTURAS WHERE ID_PROYECTO = 'ccf04404-0002-8000-8000-000000000001';",
+            "",
+            f"DELETE FROM BDSUPER.PROYECTO WHERE COD_PROYECTO = {q(cols['COD_PROYECTO'])};",
+            "",
+            ins_proyecto,
+            "",
+        ]
+    )
     OUT.write_text("\n".join(lines), encoding="utf-8")
     print(f"OK -> {OUT}")
 

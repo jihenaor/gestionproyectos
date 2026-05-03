@@ -1,7 +1,7 @@
 package com.gestionproyectos.application.service.documento;
 
-import com.gestionproyectos.adapter.outbound.persistence.jpa.entity.P001AEntity;
-import com.gestionproyectos.adapter.outbound.persistence.jpa.repository.P001ARepository;
+import com.gestionproyectos.application.dto.estructura.P001ADatosGenerales;
+import com.gestionproyectos.application.service.estructura.EstructuraPersistenceService;
 import com.gestionproyectos.application.service.googledrive.GoogleDriveService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -10,10 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -22,11 +18,12 @@ import java.util.UUID;
 public class PdfDocumentoService {
 
     private final GoogleDriveService googleDriveService;
-    private final P001ARepository p001ARepository;
+    private final EstructuraPersistenceService estructuraPersistenceService;
 
-    public PdfDocumentoService(GoogleDriveService googleDriveService, P001ARepository p001ARepository) {
+    public PdfDocumentoService(
+            GoogleDriveService googleDriveService, EstructuraPersistenceService estructuraPersistenceService) {
         this.googleDriveService = googleDriveService;
-        this.p001ARepository = p001ARepository;
+        this.estructuraPersistenceService = estructuraPersistenceService;
     }
 
     public record SubidaArchivoResult(
@@ -39,13 +36,15 @@ public class PdfDocumentoService {
     public SubidaArchivoResult generarYSubirP001A(String codigoProyecto) {
         log.info("Generando y subiendo P-001A para proyecto: {}", codigoProyecto);
 
-        Optional<P001AEntity> optEntity = p001ARepository.findByCodigoProyecto(codigoProyecto);
-        if (optEntity.isEmpty()) {
-            throw new IllegalArgumentException("No se encontró P-001A para el proyecto: " + codigoProyecto);
-        }
+        P001ADatosGenerales datos =
+                estructuraPersistenceService
+                        .obtenerP001A(codigoProyecto)
+                        .orElseThrow(
+                                () ->
+                                        new IllegalArgumentException(
+                                                "No se encontró P-001A para el proyecto: " + codigoProyecto));
 
-        P001AEntity entity = optEntity.get();
-        byte[] htmlContent = generarHtmlP001A(entity);
+        byte[] htmlContent = generarHtmlP001A(datos);
         byte[] pdfContent = convertirHtmlAPdf(htmlContent);
 
         String fecha = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
@@ -62,11 +61,10 @@ public class PdfDocumentoService {
                 fileId,
                 fileName,
                 fileInfo.map(GoogleDriveService.DriveFile::webViewLink).orElse(""),
-                folderPath
-        );
+                folderPath);
     }
 
-    private byte[] generarHtmlP001A(P001AEntity entity) {
+    private byte[] generarHtmlP001A(P001ADatosGenerales dto) {
         StringBuilder html = new StringBuilder();
         html.append("""
             <!DOCTYPE html>
@@ -89,31 +87,31 @@ public class PdfDocumentoService {
 
         html.append("<div class='header'>");
         html.append("<h1>P-001A: Datos Generales del Proyecto</h1>");
-        html.append("<p><strong>Código:</strong> ").append(entity.getCodigoProyecto()).append("</p>");
-        html.append("<p><strong>Nombre:</strong> ").append(entity.getNombreProyecto()).append("</p>");
-        html.append("<p><strong>Modalidad:</strong> ").append(formatearModalidad(entity.getModalidadInversion())).append("</p>");
+        html.append("<p><strong>Código:</strong> ").append(dto.codigoProyecto()).append("</p>");
+        html.append("<p><strong>Nombre:</strong> ").append(nullSafe(dto.nombreProyecto())).append("</p>");
+        html.append("<p><strong>Modalidad:</strong> ").append(formatearModalidad(dto.modalidadInversion())).append("</p>");
         html.append("</div>");
 
         html.append("<table>");
         html.append("<tr><th colspan='2'>Información Financiera</th></tr>");
-        html.append("<tr><td class='label'>Valor Total del Proyecto</td><td>").append(formatCurrency(entity.getValorTotalProyecto())).append("</td></tr>");
-        html.append("<tr><td class='label'>Valor Aprobado Vigencia</td><td>").append(formatCurrency(entity.getValorAprobadoVigencia())).append("</td></tr>");
-        html.append("<tr><td class='label'>Resolución AEI</td><td>").append(entity.getResolucionAEI() == 1 ? "Sí" : "No").append("</td></tr>");
-        html.append("<tr><td class='label'>Número de Acta</td><td>").append(nullSafe(entity.getNumActa())).append("</td></tr>");
-        html.append("<tr><td class='label'>Número de Consejeros</td><td>").append(entity.getNumConsejeros()).append("</td></tr>");
+        html.append("<tr><td class='label'>Valor Total del Proyecto</td><td>").append(formatCurrency(dto.valorTotalProyecto())).append("</td></tr>");
+        html.append("<tr><td class='label'>Valor Aprobado Vigencia</td><td>").append(formatCurrency(dto.valorAprobadoVigencia())).append("</td></tr>");
+        html.append("<tr><td class='label'>Resolución AEI</td><td>").append(dto.resolucionAEI() == 1 ? "Sí" : "No").append("</td></tr>");
+        html.append("<tr><td class='label'>Número de Acta</td><td>").append(nullSafe(dto.numActa())).append("</td></tr>");
+        html.append("<tr><td class='label'>Número de Consejeros</td><td>").append(dto.numConsejeros() != null ? dto.numConsejeros() : "").append("</td></tr>");
         html.append("</table>");
 
-        if (entity.getJustificacion() != null && !entity.getJustificacion().isEmpty()) {
+        if (dto.justificacion() != null && !dto.justificacion().isEmpty()) {
             html.append("<div class='section'>");
             html.append("<h2>Justificación del Proyecto</h2>");
-            html.append("<p>").append(stripHtml(entity.getJustificacion())).append("</p>");
+            html.append("<p>").append(stripHtml(dto.justificacion())).append("</p>");
             html.append("</div>");
         }
 
-        if (entity.getObjetivos() != null && !entity.getObjetivos().isEmpty()) {
+        if (dto.objetivos() != null && !dto.objetivos().isEmpty()) {
             html.append("<div class='section'>");
             html.append("<h2>Objetivos</h2>");
-            html.append("<p>").append(stripHtml(entity.getObjetivos())).append("</p>");
+            html.append("<p>").append(stripHtml(dto.objetivos())).append("</p>");
             html.append("</div>");
         }
 
@@ -133,6 +131,16 @@ public class PdfDocumentoService {
 
     private String formatearModalidad(String modalidad) {
         if (modalidad == null) return "";
+        if (modalidad.matches("\\d+")) {
+            return switch (modalidad) {
+                case "1", "01", "001" -> "01 - Infraestructura";
+                case "2", "02", "002" -> "02 - Fondo de Crédito";
+                case "3", "03", "003" -> "03 - Educación";
+                case "4", "04", "004" -> "04 - Recreación / Crédito (num.)";
+                case "5", "05", "005" -> "05 - Otros";
+                default -> modalidad;
+            };
+        }
         return switch (modalidad.toUpperCase()) {
             case "INF" -> "01 - Infraestructura";
             case "FON" -> "02 - Fondo de Crédito";

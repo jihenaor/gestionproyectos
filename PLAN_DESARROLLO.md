@@ -16,6 +16,11 @@
 8. [Especificación de Campos por Estructura](#8-especificación-de-campos-por-estructura)
 9. [Validaciones y Reglas de Negocio](#9-validaciones-y-reglas-de-negocio)
 10. [Tablas de Referencia](#10-tablas-de-referencia)
+11. [Estructuras XML de Reporte (XSD Schemas)](#11-estructuras-xml-de-reporte-xsd-schemas)
+12. [Integración Google Drive](#12-integración-google-drive)
+13. [Consideraciones Específicas DB2/AS400](#13-consideraciones-específicas-db2as400)
+14. [Anexo: Modelo de Datos Conceptual](#anexo-modelo-de-datos-conceptual)
+15. [Checklist de Implementación](#checklist-de-implementación)
 
 ---
 
@@ -3016,7 +3021,7 @@ Ejemplo: 01-01-00001
 
 ---
 
-## 9. VALIDACIONES Y REGLAS DE NEGOcio
+## 9. VALIDACIONES Y REGLAS DE NEGOCIO
 
 ### 9.1 Validaciones Comunes
 
@@ -3671,7 +3676,7 @@ spring:
           time-zone: America/Bogota
 ```
 
-### 11.2 Dependencias Maven
+### 13.2 Dependencias Maven
 
 ```xml
 <!-- IBM AS400 JDBC Driver -->
@@ -3688,7 +3693,7 @@ spring:
 </dependency>
 ```
 
-### 11.3 Consideraciones de Diseño para DB2/AS400
+### 13.3 Consideraciones de Diseño para DB2/AS400
 
 | Aspecto | Recomendación |
 |---------|---------------|
@@ -3701,7 +3706,7 @@ spring:
 | **Transacciones** | Configurar commit explícito según necesidades |
 | **Nombres archivos físicos** | Máximo 10 caracteres: `P001A`, `P002A`, `PF001F` |
 
-### 11.4 Estructura de Bibliotecas AS400 Sugerida
+### 13.4 Estructura de Bibliotecas AS400 Sugerida
 
 ```
 Biblioteca: CCFPROY
@@ -3737,7 +3742,7 @@ Biblioteca: CCFPROY
     └── GEN_CONSECUTIVO (Generación consecutivos)
 ```
 
-### 11.5 Mapeo Tipos de Datos DB2/AS400
+### 13.5 Mapeo Tipos de Datos DB2/AS400
 
 | Tipo Java | Tipo DB2/AS400 | Longitud |
 |-----------|----------------|----------|
@@ -3749,7 +3754,7 @@ Biblioteca: CCFPROY
 | Boolean | CHAR(1) | 1 carácter |
 | Double | DOUBLE | 8 bytes |
 
-### 11.6 Validaciones SQL específicas AS400
+### 13.6 Validaciones SQL específicas AS400
 
 ```sql
 -- Validar formato código proyecto (ej: CCF001-01-00001)
@@ -3766,7 +3771,7 @@ WHERE NUMERO_CONSEJEROS >= 7
 -- Habilitar journaling en tablas para auditoría
 ```
 
-### 11.7 Consideraciones de Rendimiento
+### 13.7 Consideraciones de Rendimiento
 
 1. **Join con archivos lógicos** - Utilizar archivos lógicos para optimizar joins
 2. **Query Optimization** - Evitar SELECT *; especificar campos
@@ -3774,7 +3779,7 @@ WHERE NUMERO_CONSEJEROS >= 7
 4. **OLAP vs OLTP** - Separar cargas de reportes (Query Manager)
 5. **Nombres DDS** - Mantener compatibilidad con nombres Java
 
-### 11.8 Integración con Sistemas Legados
+### 13.8 Integración con Sistemas Legados
 
 ```
 ┌─────────────────────────────────────────────────────────┐

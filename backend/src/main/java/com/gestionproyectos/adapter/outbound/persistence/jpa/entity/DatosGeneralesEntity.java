@@ -3,12 +3,16 @@ package com.gestionproyectos.adapter.outbound.persistence.jpa.entity;
 import jakarta.persistence.*;
 import java.util.UUID;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 @Entity
-@Table(name = "P001A_DATOS_GENERALES")
-public class P001AEntity {
+@Table(name = "DATOS_GENERALES")
+public class DatosGeneralesEntity {
 
     @Id
-    @Column(name = "ID")
+    @Column(name = "ID", length = 36)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
     private UUID id;
 
     @Column(name = "COD_PROYECTO", length = 15, nullable = false)
@@ -66,7 +70,7 @@ public class P001AEntity {
     @Column(name = "VERSION")
     private Long version;
 
-    public P001AEntity() {}
+    public DatosGeneralesEntity() {}
 
     public UUID getId() { return id; }
     public void setId(UUID id) { this.id = id; }

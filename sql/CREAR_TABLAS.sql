@@ -8,16 +8,19 @@
 -- NOTA: Este script usa UUID como llave primaria para todas las tablas.
 --       COD_PROYECTO es un atributo de negocio que puede cambiar.
 -- Biblioteca: cambie solo la siguiente linea si no es BDSUPER (objetos sin calificador).
+--
+-- Tablas del REST Spring (JPA ProyectoEntity): PROYECTO y PROYECTO_ESTRUCTURAS se crean
+-- al final de este archivo en "SECCION JPA" (no en la seccion 1 siguiente; esa es GP_* legado).
 -- ============================================================================
 
 SET SCHEMA BDSUPER;
 
 -- ============================================================================
--- SECCION 1: PROYECTOS GENERALES (P-001A a P-056A)
+-- SECCION 1: Esquema legado GP_* — GP_PROYECTOS y tablas P-001A … P-056A
 -- ============================================================================
 
 -- -----------------------------------------------------------------------------
--- Tabla principal de Proyectos - Llave primaria UUID
+-- GP_PROYECTOS: tabla principal del Banco de Proyectos (UUID, COD_PROYECTO)
 -- -----------------------------------------------------------------------------
 
 CREATE TABLE GP_PROYECTOS (
@@ -741,7 +744,7 @@ INSERT INTO SYS_ESTRUCTURAS (COD_ESTRUCTURA, NOMBRE_ESTRUCTURA, DESCRIPCION, PER
 ('P-055A', 'Capitalizacion', 'Capitalizaciones', 'UNICO', 'N', 15);
 
 -- ============================================================================
--- SECCION JPA: backend Spring (REST /v1/proyectos, P-001A persistencia)
+-- SECCION JPA: backend Spring (REST /v1/proyectos; P-001A en GP_* del script)
 -- ============================================================================
 
 CREATE TABLE PROYECTO (
@@ -771,33 +774,6 @@ CREATE TABLE PROYECTO_ESTRUCTURAS (
 );
 
 COMMENT ON TABLE PROYECTO_ESTRUCTURAS IS 'Estructuras completadas por proyecto (JPA @ElementCollection)';
-
-CREATE TABLE P001A_DATOS_GENERALES (
-    ID VARCHAR(36) NOT NULL,
-    COD_PROYECTO VARCHAR(15) NOT NULL,
-    NOMBRE_PROYECTO VARCHAR(200) NOT NULL,
-    MODALIDAD_INVERSION VARCHAR(3) NOT NULL,
-    VALOR_TOTAL_PROYECTO BIGINT NOT NULL,
-    VALOR_APROBADO_VIGENCIA BIGINT NOT NULL,
-    JUSTIFICACION VARCHAR(4000),
-    OBJETIVOS VARCHAR(2000),
-    RESOLUCION_AEI INTEGER,
-    NUM_ACTA VARCHAR(20),
-    FECHA_CONSEJO VARCHAR(8),
-    NUM_CONSEJEROS INTEGER,
-    TIEMPO_RECUPERACION INTEGER,
-    TASA_DESCUENTO VARCHAR(10),
-    NUMERO_BENEFICIARIOS BIGINT,
-    DESCRIPCION_OBJETIVO VARCHAR(1000),
-    FECHA_CREACION TIMESTAMP,
-    FECHA_ACTUALIZACION TIMESTAMP,
-    VERSION BIGINT,
-    CONSTRAINT PK_P001A_DATOS_GENERALES PRIMARY KEY (ID)
-);
-
-COMMENT ON TABLE P001A_DATOS_GENERALES IS 'P-001A datos generales (JPA P001AEntity)';
-
-CREATE UNIQUE INDEX UX_P001A_COD_PROYECTO ON P001A_DATOS_GENERALES (COD_PROYECTO);
 
 -- ============================================================================
 -- FIN DEL SCRIPT

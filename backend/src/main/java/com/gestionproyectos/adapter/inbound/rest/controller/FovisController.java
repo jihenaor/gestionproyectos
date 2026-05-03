@@ -7,34 +7,29 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/v1/fovis")
 @Tag(name = "FOVIS", description = "Gestión de proyectos FOVIS")
 public class FovisController {
 
-    @GetMapping
+    private static final Set<String> ESTRUCTURAS_FOVIS_REQUERIDAS = Set.of(
+            "P-001F", "P-002F", "P-011F", "P-012F", "P-014F"
+    );
+
+    @GetMapping("/proyectos")
     @Operation(summary = "Listar proyectos FOVIS")
-    public ResponseEntity<PaginatedResponse<ProyectoResponse>> listar(
+    public ResponseEntity<PaginatedResponse<ProyectoResponse>> listarFovis(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {
-        return ResponseEntity.ok(new PaginatedResponse<>(
-                List.of(), page, size, 0, 0, false, false
-        ));
+        return ResponseEntity.ok(PaginatedResponse.of(java.util.Collections.emptyList(), 0, 20, 0));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/proyectos/{id}")
     @Operation(summary = "Obtener proyecto FOVIS por ID")
-    public ResponseEntity<ProyectoResponse> obtenerPorId(@PathVariable UUID id) {
-        return ResponseEntity.ok(new ProyectoResponse(
-                id, "01-01-00001", "Proyecto FOVIS Demo",
-                "Obras Asociadas VIS", 1000000000L, 1000000000L,
-                "Descripción del proyecto FOVIS", "Borrador",
-                java.time.LocalDate.now(), java.time.LocalDateTime.now(),
-                java.util.Set.of(), 0.0
-        ));
+    public ResponseEntity<ProyectoResponse> obtenerPorId(@PathVariable String id) {
+        return ResponseEntity.notFound().build();
     }
 }

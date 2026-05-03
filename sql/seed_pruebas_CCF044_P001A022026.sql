@@ -1,8 +1,8 @@
--- Datos de prueba (no incluidos en CREAR_TABLAS.sql).
+-- Datos de prueba (script aparte; no forma parte de CREAR_TABLAS.sql).
 -- Fuente XML: _data_BancodeProyectos-508723940_Files_CCF044P-001A022026.xml
--- Tablas: BDSUPER.GP_PROYECTOS, BDSUPER.GP_DATOS_GENERALES (requiere CREAR_TABLAS.sql ya ejecutado).
--- Idempotente por COD_PROYECTO CCF044-04-00028. Ejecutar en IBM i (Run SQL Scripts / STRSQL / RUNSQLSTM).
--- Regenerar desde XML: python sql/generate_seed_from_xml.py
+-- Legado: BDSUPER.GP_PROYECTOS, GP_DATOS_GENERALES. JPA: BDSUPER.PROYECTO (GET /api/v1/proyectos).
+-- Idempotente: borra por COD_PROYECTO antes de insertar.
+-- Ejecutar en IBM i tras sql/CREAR_TABLAS.sql. Regenerar: python sql/generate_seed_from_xml.py
 
 DELETE FROM BDSUPER.GP_DATOS_GENERALES
 WHERE ID_PROYECTO IN (SELECT ID_PROYECTO FROM BDSUPER.GP_PROYECTOS WHERE COD_PROYECTO = 'CCF044-04-00028');
@@ -38,4 +38,23 @@ INSERT INTO BDSUPER.GP_DATOS_GENERALES (
     1,
     NULL,
     7469
+);
+
+-- PROYECTO (JPA): listado REST /api/v1/proyectos
+DELETE FROM BDSUPER.PROYECTO_ESTRUCTURAS WHERE ID_PROYECTO = 'ccf04404-0002-8000-8000-000000000001';
+
+DELETE FROM BDSUPER.PROYECTO WHERE COD_PROYECTO = 'CCF044-04-00028';
+
+INSERT INTO BDSUPER.PROYECTO (
+    ID_PROYECTO, COD_PROYECTO, NOMBRE, MODALIDAD_INVERSION,
+    VALOR_TOTAL, VALOR_APROBADO, JUSTIFICACION, ESTADO,
+    FECHA_CREACION, ULTIMA_ACTUALIZACION, VERSION
+) VALUES (
+    'ccf04404-0002-8000-8000-000000000001', 'CCF044-04-00028', 'Crédito es un programa social en COMFAMILIAR RISARALDA. El presente proyecto, para seguimiento y control posterior de la Supersubsidio, consiste en ampliar el fondo de crédito para el presente año 202', '004',
+    3000000000, 3000000000,
+    'Otros referentes de justificación de Crédito Social La Caja sobrepasa el 90% de créditos a beneficiarios, logrando alto impacto social, mayor bienestar de los afiliados e incremento de cobertura, montos disponibles por usuario y modalidades. -El crédito a menores tasas y sin barreras son iniciativas socialmente convenientes porque ayudan a sobrellevar las cargas económicas a beneficiarios. -El libre acceso al crédito, la bancarización, las recomendaciones de organismos multilaterales, la experiencia en Banca de pobres, negocios en la base de la pirámide y ser una prioridad de la Ley 21 de 1982, hacen de crédito una excelente inversión social. -El proyecto capitaliza experiencia propia. Esto es útil porque implica liberar beneficiarios del azote de la usura.El servicio está alineado con directrices nacionales y locales de los planes de desarrollo. Es así que el Plan Nacional de Desarrollo 2022-2026 (PND 2022-2026) potencia mundial de la vida Colombia, y dentro de las grandes transformaciones y sus principales metas para el ítem 2 de “Seguridad Humana y Justicia Social” en el numeral ocho sostenibilidad y crecimiento empresarial dentro del literal e en Iniciativas productivas, acceso al financiamiento amplio y educación financiera para avanzar en la democratización del crédito, comenzando por una buena educación financiera, y ofreciéndole a los beneficiarios información adecuada.',
+    'BORRADOR',
+    CURRENT_DATE,
+    CURRENT_TIMESTAMP,
+    0
 );

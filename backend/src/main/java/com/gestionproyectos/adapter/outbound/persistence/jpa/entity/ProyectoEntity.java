@@ -5,14 +5,19 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.sql.Types;
 import java.util.UUID;
+
+import org.hibernate.annotations.JdbcTypeCode;
 
 @Entity
 @Table(name = "PROYECTO")
 public class ProyectoEntity {
 
+    /** IBM i / DDL VARCHAR(36): Hibernate debe enlazar UUID como texto, no VARBINARY. */
     @Id
-    @Column(name = "ID_PROYECTO")
+    @Column(name = "ID_PROYECTO", length = 36)
+    @JdbcTypeCode(Types.VARCHAR)
     private UUID id;
 
     @Column(name = "COD_PROYECTO", length = 15, nullable = false, unique = true)

@@ -1,6 +1,7 @@
 package com.gestionproyectos.application.service.mapper;
 
-import com.gestionproyectos.adapter.outbound.persistence.jpa.entity.P001AEntity;
+import com.gestionproyectos.adapter.outbound.persistence.jpa.entity.GpProyectoEntity;
+import com.gestionproyectos.adapter.outbound.persistence.jpa.entity.GpDatosGeneralesEntity;
 import com.gestionproyectos.adapter.outbound.persistence.jpa.entity.ProyectoEntity;
 import com.gestionproyectos.application.dto.estructura.P001ADatosGenerales;
 import com.gestionproyectos.domain.model.*;
@@ -61,70 +62,141 @@ public class ProyectoMapper {
         entity.setEstructurasCompletadas(dominio.estructurasCompletadas());
     }
 
-    public P001ADatosGenerales toP001ADTO(P001AEntity entity) {
-        if (entity == null) return null;
+    /**
+     * P-001A DTO a partir de {@code GP_PROYECTOS} + fila opcional {@code GP_DATOS_GENERALES}.
+     */
+    public P001ADatosGenerales toP001ADTO(GpProyectoEntity gp, GpDatosGeneralesEntity dg) {
+        if (gp == null) return null;
+
+        Integer tiempo =
+                dg != null && dg.getTiempoRecuperacion() != null
+                        ? dg.getTiempoRecuperacion()
+                        : gp.getTmpRecuperacion();
+
+        String objetivos =
+                dg != null && dg.getObjetivosEspecificos() != null && !dg.getObjetivosEspecificos().isBlank()
+                        ? dg.getObjetivosEspecificos()
+                        : gp.getObjetivoProyecto();
+
+        Long numBenef =
+                dg != null && dg.getNumeroBeneficiarios() != null
+                        ? dg.getNumeroBeneficiarios()
+                        : gp.getNumPoblacionAfectada();
 
         return new P001ADatosGenerales(
-                entity.getCodigoProyecto(),
-                entity.getNombreProyecto(),
-                entity.getModalidadInversion(),
-                entity.getValorTotalProyecto(),
-                entity.getValorAprobadoVigencia(),
-                entity.getJustificacion(),
-                entity.getObjetivos(),
-                entity.getResolucionAEI(),
-                entity.getNumActa(),
-                entity.getFechaConsejo(),
-                entity.getNumConsejeros(),
-                entity.getTiempoRecuperacion(),
-                entity.getTasaDescuento(),
-                entity.getNumeroBeneficiarios(),
-                entity.getDescripcionObjetivo()
-        );
+                gp.getCodigoProyecto(),
+                trunc(gp.getDescripcionProyecto(), 200),
+                modalidadFromModDeInversion(gp.getModDeInversion()),
+                gp.getValTotalProyecto(),
+                gp.getValorAprVigencia(),
+                gp.getJustificacion(),
+                objetivos,
+                gp.getResolucionAEI(),
+                gp.getNumActaAei() != null ? gp.getNumActaAei().toString() : null,
+                gp.getFechaAprAei(),
+                gp.getNumConsejeros(),
+                tiempo,
+                dg != null ? dg.getTasaDescuento() : null,
+                numBenef,
+                dg != null ? dg.getDescripcionObjetivo() : null);
     }
 
-    public P001AEntity toP001AEntity(P001ADatosGenerales dto) {
-        if (dto == null) return null;
-
-        P001AEntity entity = new P001AEntity();
-        entity.setId(UUID.randomUUID());
-        entity.setCodigoProyecto(dto.codigoProyecto());
-        entity.setNombreProyecto(dto.nombreProyecto());
-        entity.setModalidadInversion(dto.modalidadInversion());
-        entity.setValorTotalProyecto(dto.valorTotalProyecto());
-        entity.setValorAprobadoVigencia(dto.valorAprobadoVigencia());
-        entity.setJustificacion(dto.justificacion());
-        entity.setObjetivos(dto.objetivos());
-        entity.setResolucionAEI(dto.resolucionAEI());
-        entity.setNumActa(dto.numActa());
-        entity.setFechaConsejo(dto.fechaConsejo());
-        entity.setNumConsejeros(dto.numConsejeros());
-        entity.setTiempoRecuperacion(dto.tiempoRecuperacion());
-        entity.setTasaDescuento(dto.tasaDescuento());
-        entity.setNumeroBeneficiarios(dto.numeroBeneficiarios());
-        entity.setDescripcionObjetivo(dto.descripcionObjetivo());
-        entity.setFechaCreacion(LocalDateTime.now());
-        entity.setFechaActualizacion(LocalDateTime.now());
-        return entity;
+    public GpProyectoEntity newGpProyectoFromP001ADto(P001ADatosGenerales dto, UUID idProyecto) {
+        LocalDateTime now = LocalDateTime.now();
+        GpProyectoEntity gp = new GpProyectoEntity();
+        gp.setId(idProyecto);
+        gp.setCodigoProyecto(dto.codigoProyecto());
+        gp.setModProyecto(1);
+        gp.setModDeInversion(modalidadToModDeInversion(dto.modalidadInversion()));
+        gp.setValTotalProyecto(dto.valorTotalProyecto());
+        gp.setValorAprVigencia(dto.valorAprobadoVigencia());
+        gp.setDescripcionProyecto(trunc(dto.nombreProyecto(), 4000));
+        gp.setObjetivoProyecto(trunc(dto.objetivos(), 4000));
+        gp.setJustificacion(trunc(dto.justificacion(), 4000));
+        gp.setResolucionAEI(dto.resolucionAEI());
+        gp.setNumActaAei(parseNumActaLong(dto.numActa()));
+        gp.setFechaAprAei(trunc(dto.fechaConsejo(), 8));
+        gp.setNumConsejeros(dto.numConsejeros() != null ? dto.numConsejeros() : 0);
+        gp.setTmpRecuperacion(dto.tiempoRecuperacion());
+        gp.setEstadoProyecto("BORRADOR");
+        gp.setFecCreacion(now);
+        gp.setFecModificacion(now);
+        return gp;
     }
 
-    public P001AEntity toP001AEntityUpdate(P001AEntity entity, P001ADatosGenerales dto) {
-        entity.setNombreProyecto(dto.nombreProyecto());
-        entity.setModalidadInversion(dto.modalidadInversion());
-        entity.setValorTotalProyecto(dto.valorTotalProyecto());
-        entity.setValorAprobadoVigencia(dto.valorAprobadoVigencia());
-        entity.setJustificacion(dto.justificacion());
-        entity.setObjetivos(dto.objetivos());
-        entity.setResolucionAEI(dto.resolucionAEI());
-        entity.setNumActa(dto.numActa());
-        entity.setFechaConsejo(dto.fechaConsejo());
-        entity.setNumConsejeros(dto.numConsejeros());
-        entity.setTiempoRecuperacion(dto.tiempoRecuperacion());
-        entity.setTasaDescuento(dto.tasaDescuento());
-        entity.setNumeroBeneficiarios(dto.numeroBeneficiarios());
-        entity.setDescripcionObjetivo(dto.descripcionObjetivo());
-        entity.setFechaActualizacion(LocalDateTime.now());
-        return entity;
+    public void mergeGpProyectoFromP001ADto(GpProyectoEntity gp, P001ADatosGenerales dto) {
+        gp.setDescripcionProyecto(trunc(dto.nombreProyecto(), 4000));
+        gp.setModDeInversion(modalidadToModDeInversion(dto.modalidadInversion()));
+        gp.setValTotalProyecto(dto.valorTotalProyecto());
+        gp.setValorAprVigencia(dto.valorAprobadoVigencia());
+        gp.setObjetivoProyecto(trunc(dto.objetivos(), 4000));
+        gp.setJustificacion(trunc(dto.justificacion(), 4000));
+        gp.setResolucionAEI(dto.resolucionAEI());
+        gp.setNumActaAei(parseNumActaLong(dto.numActa()));
+        gp.setFechaAprAei(trunc(dto.fechaConsejo(), 8));
+        gp.setNumConsejeros(dto.numConsejeros() != null ? dto.numConsejeros() : 0);
+        gp.setTmpRecuperacion(dto.tiempoRecuperacion());
+        gp.setFecModificacion(LocalDateTime.now());
+    }
+
+    public GpDatosGeneralesEntity newGpDatosGeneralesFromDto(P001ADatosGenerales dto, UUID idProyecto) {
+        LocalDateTime now = LocalDateTime.now();
+        GpDatosGeneralesEntity dg = new GpDatosGeneralesEntity();
+        dg.setId(UUID.randomUUID());
+        dg.setIdProyecto(idProyecto);
+        mergeGpDatosGeneralesFieldsFromDto(dg, dto);
+        dg.setFecCreacion(now);
+        dg.setFecModificacion(now);
+        return dg;
+    }
+
+    public void mergeGpDatosGeneralesFromDto(GpDatosGeneralesEntity dg, P001ADatosGenerales dto) {
+        mergeGpDatosGeneralesFieldsFromDto(dg, dto);
+        dg.setFecModificacion(LocalDateTime.now());
+    }
+
+    private void mergeGpDatosGeneralesFieldsFromDto(GpDatosGeneralesEntity dg, P001ADatosGenerales dto) {
+        dg.setObjetivosEspecificos(trunc(dto.objetivos(), 4000));
+        dg.setDescripcionObjetivo(trunc(dto.descripcionObjetivo(), 2000));
+        dg.setTiempoRecuperacion(dto.tiempoRecuperacion());
+        dg.setTasaDescuento(trunc(dto.tasaDescuento(), 5));
+        dg.setNumeroBeneficiarios(dto.numeroBeneficiarios());
+    }
+
+    private static String trunc(String s, int max) {
+        if (s == null) return null;
+        return s.length() <= max ? s : s.substring(0, max);
+    }
+
+    private static Long parseNumActaLong(String raw) {
+        if (raw == null || raw.isBlank()) return null;
+        try {
+            return Long.parseLong(raw.trim());
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    /** Código modalidad para API: numérico {@code 001}… o alias legado {@code INF}, {@code FON}, … */
+    private static String modalidadFromModDeInversion(Integer modDeInversion) {
+        if (modDeInversion == null) return "000";
+        return String.format("%03d", modDeInversion);
+    }
+
+    private static int modalidadToModDeInversion(String modalidad) {
+        if (modalidad == null || modalidad.isBlank()) return 0;
+        String m = modalidad.trim();
+        if (m.matches("\\d+")) {
+            return Integer.parseInt(m);
+        }
+        return switch (m.toUpperCase()) {
+            case "INF" -> 1;
+            case "FON" -> 2;
+            case "EDU" -> 3;
+            case "REC" -> 4;
+            case "OTR", "OTRO" -> 5;
+            default -> 0;
+        };
     }
 
     private ModalidadInversion modalidadFromString(String codigo) {
