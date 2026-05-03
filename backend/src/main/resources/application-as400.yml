@@ -1,0 +1,38 @@
+# IBM i (perfil as400). AS400_HOST por defecto 10.25.2.10; sobrescriba con variable de entorno si aplica otro sistema.
+#
+# Biblioteca IBM i y esquema JPA: AS400_LIBRARY (por defecto BDSUPER). Debe coincidir con la URL JDBC y con hibernate.default_schema.
+# DDL tablas (incluye JPA): sql/CREAR_TABLAS.sql (SET SCHEMA BDSUPER al inicio). Sin tablas JPA: SQL0204 PROYECTO no encontrado.
+#
+# Producción (por defecto aquí): ddl-auto none — no valida ni altera el esquema al arrancar (evita caídas por validate).
+# Solo en desarrollo contra IBM i, si quiere comprobar tablas/columnas: SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+app:
+  error:
+    # Producción: false (respuestas 500 sin exception/detail). Desarrollo: APP_ERROR_EXPOSE_DETAILS=true
+    expose-details: ${APP_ERROR_EXPOSE_DETAILS:false}
+
+spring:
+  datasource:
+    # Alineado con SQuirreL (host + biblioteca). Puerto IBM i habitual 446.
+    url: jdbc:as400://${AS400_HOST:10.25.2.10}/${AS400_LIBRARY:BDSUPER};port=${AS400_PORT:446};prompt=false;translate binary=true;naming=system;errors=full
+    # Literales: el $ en contraseña NO debe ir dentro de ${...} (Spring lo interpreta mal). SPRING_DATASOURCE_* sigue sobrescribiendo desde el entorno.
+    username: saljorge
+    password: 'Jih8189$'
+    driver-class-name: com.ibm.as400.access.AS400JDBCDriver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+  jpa:
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:none}
+    show-sql: ${SPRING_JPA_SHOW_SQL:false}
+    properties:
+      hibernate:
+        default_schema: ${AS400_LIBRARY:BDSUPER}
+        dialect: org.hibernate.dialect.DB2400Dialect
+        format_sql: true
+        jdbc:
+          time_zone: America/Bogota
+    open-in-view: false

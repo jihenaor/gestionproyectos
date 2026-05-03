@@ -1,0 +1,31 @@
+# Gradle
+.gradle/
+build/
+bin/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Compiled
+*.class
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.classpath
+*.factorypath
+*.project
+*.settings/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build
+dist/

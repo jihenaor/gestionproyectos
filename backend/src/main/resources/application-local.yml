@@ -1,0 +1,25 @@
+# Desarrollo sin IBM i: H2 en memoria; esquema JPA BDSUPER (alineado con sql/CREAR_TABLAS.sql / IBM i).
+# GET /v1/proyectos usa la tabla JPA PROYECTO en ese esquema (no GP_PROYECTOS del modelo legado).
+# LocalSampleProyectosRunner inserta 1 fila de ejemplo si la tabla está vacía.
+app:
+  error:
+    expose-details: true
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:gestiondb;MODE=DB2;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS BDSUPER
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        default_schema: BDSUPER
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+        jdbc:
+          time_zone: America/Bogota
+    open-in-view: false

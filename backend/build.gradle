@@ -1,0 +1,84 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.4.1'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+repositories {
+    mavenCentral()
+}
+
+/*
+ * Paridad con C:\\Users\\CenApoAdm03\\desarrollo\\circulares\\servicio-core\\build.gradle
+ * - Misma: jt400 20.0.7, bloque Google (api-client, oauth jetty, http-client-jackson2, auth, drive).
+ * - Distinto a propósito: Spring Boot 3.4.1 aquí vs 4.0.3 en circulares → Gson forzado a 2.11+ (Strictness).
+ * - OAuth2: client + resource-server (JWT en SecurityConfig) + springdoc; circulares usa resource-server + jjwt 0.11.5.
+ * - No incluimos MySQL/MapStruct/Sentry/POI/PDF de circulares: no se usan en este módulo.
+ */
+dependencies {
+    // Spring Boot Starters
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // OpenAPI Documentation
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
+
+    // AS400 JDBC Driver
+    implementation 'net.sf.jt400:jt400:20.0.7'
+
+    // Google Drive API — mismas coordenadas que circulares/servicio-core.
+    // Spring Boot 3.4.x exige Gson ≥ 2.11 (enum Strictness); circulares usa Boot 4 y BOM distinto.
+    implementation 'com.google.api-client:google-api-client:1.32.1'
+    implementation 'com.google.oauth-client:google-oauth-client-jetty:1.32.1'
+    implementation 'com.google.http-client:google-http-client-jackson2:1.42.0'
+    implementation 'com.google.auth:google-auth-library-oauth2-http:1.3.0'
+    implementation 'com.google.apis:google-api-services-drive:v3-rev20220815-2.0.0'
+    implementation 'com.google.code.gson:gson:2.11.0'
+
+    // JWT
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // H2: perfil "local" (bootRun sin IBM i). No se usa con perfil "as400".
+    runtimeOnly 'com.h2database:h2'
+
+    // Testing
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.mockito:mockito-core'
+    testImplementation 'org.mockito:mockito-junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+configurations.all {
+    resolutionStrategy {
+        force 'com.google.code.gson:gson:2.11.0'
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+bootJar {
+    archiveFileName = 'gestionproyectos.jar'
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs.add('-parameters')
+}
