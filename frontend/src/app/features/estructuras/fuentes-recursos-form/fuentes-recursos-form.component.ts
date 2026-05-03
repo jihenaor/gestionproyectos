@@ -77,6 +77,7 @@ export class FuentesRecursosFormComponent implements OnInit {
   agregarRecurso(): void {
     if (this.datos.recursos.length < 10) {
       this.datos.recursos.push({
+        codigoFuente: Date.now().toString(),
         tipo: '',
         fuente: '',
         valor: 0
@@ -124,6 +125,7 @@ export class FuentesRecursosFormComponent implements OnInit {
 
   cancelar(): void {
     this.datos.recursos = [{
+      codigoFuente: Date.now().toString(),
       tipo: '',
       fuente: '',
       valor: 0

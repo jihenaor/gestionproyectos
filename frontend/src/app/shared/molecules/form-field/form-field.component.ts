@@ -1,6 +1,5 @@
-import { Component, input, output, signal, ContentChild, ElementRef, AfterContentInit } from '@angular/core';
-import { InputComponent } from '../../atoms/input/input.component';
-import { SelectComponent, SelectOption } from '../../atoms/select/select.component';
+import { Component, input, signal } from '@angular/core';
+import type { SelectOption } from '../../atoms/select/select.component';
 
 export interface FieldValidation {
   type: 'required' | 'format' | 'range' | 'custom';
@@ -8,10 +7,14 @@ export interface FieldValidation {
   message: string;
 }
 
+/**
+ * Etiqueta + panel de ayuda + **siempre** proyección del control en `<ng-content>`.
+ * Los átomos (`app-input`, `app-select`, `<input>` nativo, etc.) van como hijos del host.
+ */
 @Component({
   selector: 'app-form-field',
   standalone: true,
-  imports: [InputComponent, SelectComponent],
+  imports: [],
   template: `
     <div class="form-field" [class.has-error]="hasError()" [class.is-conditional]="isConditional()">
       <div class="form-field__header">
@@ -30,39 +33,9 @@ export interface FieldValidation {
       </div>
 
       <div class="form-field__content">
-        @switch (fieldType()) {
-          @case ('input') {
-            <app-input
-              [inputId]="fieldId()"
-              [type]="inputType()"
-              [placeholder]="placeholder()"
-              [helperText]="helperText()"
-              [required]="isRequired()"
-              [disabled]="isDisabled()"
-              [maxLength]="maxLength()"
-              [showCharCount]="showCharCount()"
-              [hasError]="hasError()"
-              [errorMessage]="errorMessage()"
-              [prefixIcon]="prefixIcon()"
-              [suffixIcon]="suffixIcon()"
-            />
-          }
-          @case ('select') {
-            <app-select
-              [selectId]="fieldId()"
-              [label]="''"
-              [placeholder]="placeholder()"
-              [options]="selectOptions()"
-              [required]="isRequired()"
-              [disabled]="isDisabled()"
-              [hasError]="hasError()"
-              [errorMessage]="errorMessage()"
-            />
-          }
-          @default {
-            <ng-content></ng-content>
-          }
-        }
+        <div class="form-field__control form-field__control--projected">
+          <ng-content />
+        </div>
         <button
           type="button"
           class="form-field__help-btn"
@@ -140,10 +113,12 @@ export interface FieldValidation {
       width: 100%;
       min-width: 0;
     }
-    .form-field__content > :first-child {
+    .form-field__control--projected {
       flex: 1;
       min-width: 0;
       align-self: stretch;
+      display: flex;
+      flex-direction: column;
     }
     .form-field__help-btn {
       width: 1.5rem;
@@ -200,21 +175,23 @@ export interface FieldValidation {
 export class FormFieldComponent {
   label = input.required<string>();
   fieldId = input.required<string>();
-  fieldType = input<'input' | 'select' | 'custom'>('input');
-  inputType = input<'text' | 'email' | 'password' | 'number' | 'tel' | 'date'>('text');
-  placeholder = input<string>('');
   description = input<string>('');
   formatExample = input<string>('');
   tableReference = input<string>('');
   validationRules = input<string[]>([]);
-  helperText = input<string>('');
   isRequired = input<boolean>(false);
   isConditional = input<boolean>(false);
+  hasError = input<boolean>(false);
+  errorMessage = input<string>('');
+
+  /** Opcionales: compatibilidad con plantillas antiguas; no afectan al layout. */
+  fieldType = input<'input' | 'select' | 'custom'>('custom');
+  inputType = input<'text' | 'email' | 'password' | 'number' | 'tel' | 'date'>('text');
+  placeholder = input<string>('');
+  helperText = input<string>('');
   isDisabled = input<boolean>(false);
   maxLength = input<number>(0);
   showCharCount = input<boolean>(false);
-  hasError = input<boolean>(false);
-  errorMessage = input<string>('');
   prefixIcon = input<string>('');
   suffixIcon = input<string>('');
   selectOptions = input<SelectOption[]>([]);

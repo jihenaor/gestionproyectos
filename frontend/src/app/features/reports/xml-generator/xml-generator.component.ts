@@ -11,6 +11,7 @@ interface EstructuraXml {
   codigo: string;
   nombreXml: string;
   nombreArchivo: string;
+  seleccionado: boolean;
 }
 
 interface ErrorInfo {
@@ -28,12 +29,25 @@ interface ArchivoGenerado {
   tamano: string;
 }
 
-interface PeriodoInfo {
-  codigoPeriodo: string;
-  descripcion: string;
-  anio: number;
-  mes: number;
-}
+const ESTRUCTURAS_XML_INIT: EstructuraXml[] = [
+  { codigo: 'P-001A', nombreXml: 'PROYECTOS_NUEVOS', nombreArchivo: 'CCF044_001A_PERC.xml', seleccionado: true },
+  { codigo: 'P-002A', nombreXml: 'CRONOGRAMA_INICIAL_PROYECTO', nombreArchivo: 'CCF044_002A_PERC.xml', seleccionado: true },
+  { codigo: 'P-003A', nombreXml: 'LOCALIZACION_PROYECTO', nombreArchivo: 'CCF044_003A_PERC.xml', seleccionado: true },
+  { codigo: 'P-004C', nombreXml: 'ESTRUCTURA_FUENTE_RECURSOS', nombreArchivo: 'CCF044_004C_PERC.xml', seleccionado: true },
+  { codigo: 'P-005A', nombreXml: 'FICHA_TECNICA_PROYECTOS', nombreArchivo: 'CCF044_005A_PERC.xml', seleccionado: true },
+  { codigo: 'P-011A', nombreXml: 'COBERTURA_PROYECTADA', nombreArchivo: 'CCF044_011A_PERC.xml', seleccionado: true },
+  { codigo: 'P-011B', nombreXml: 'COBERTURA_EJECUTADA', nombreArchivo: 'CCF044_011B_PERC.xml', seleccionado: true },
+  { codigo: 'P-012A', nombreXml: 'SEGUIMIENTO_PROYECTO', nombreArchivo: 'CCF044_012A_PERC.xml', seleccionado: true },
+  { codigo: 'P-013A', nombreXml: 'ASPECTOS_INFRAESTRUCTURA', nombreArchivo: 'CCF044_013A_PERC.xml', seleccionado: true },
+  { codigo: 'P-023A', nombreXml: 'FONDOS_CREDITO', nombreArchivo: 'CCF044_023A_PERC.xml', seleccionado: true },
+  { codigo: 'P-024A', nombreXml: 'CARTERA_POR_EDADES', nombreArchivo: 'CCF044_024A_PERC.xml', seleccionado: true },
+  { codigo: 'P-026A', nombreXml: 'ARRENDAMIENTO_INMUEBLES', nombreArchivo: 'CCF044_026A_PERC.xml', seleccionado: true },
+  { codigo: 'P-031A', nombreXml: 'COMODATO_INMUEBLES', nombreArchivo: 'CCF044_031A_PERC.xml', seleccionado: true },
+  { codigo: 'P-034A', nombreXml: 'COMPRA_INMUEBLES', nombreArchivo: 'CCF044_034A_PERC.xml', seleccionado: true },
+  { codigo: 'P-040A', nombreXml: 'PERMUTA_INMUEBLES', nombreArchivo: 'CCF044_040A_PERC.xml', seleccionado: true },
+  { codigo: 'P-050A', nombreXml: 'NEGOCIACION_ACCIONES', nombreArchivo: 'CCF044_050A_PERC.xml', seleccionado: true },
+  { codigo: 'P-055A', nombreXml: 'CAPITALIZACIONES', nombreArchivo: 'CCF044_055A_PERC.xml', seleccionado: true }
+];
 
 @Component({
   selector: 'app-xml-generator',
@@ -46,23 +60,46 @@ interface PeriodoInfo {
           <h1 class="xml-generator__title">Circular Superintendencia</h1>
           <p class="xml-generator__subtitle">Generación de archivos XML para reporte de información</p>
         </div>
-        @let periodo = periodoActual();
-        @if (periodo) {
-          <div class="xml-generator__periodo">
-            <span class="xml-generator__periodo-label">Periodo:</span>
-            <span class="xml-generator__periodo-value">{{ periodo.codigoPeriodo }}</span>
-            <span class="xml-generator__periodo-desc">{{ periodo.descripcion }} - {{ periodo.anio }}/{{ periodo.mes }}</span>
-          </div>
-        }
+        <div class="xml-generator__periodo-section">
+          <label class="xml-generator__periodo-label" for="periodo-select">Periodo de Reporte:</label>
+          @if (periodosDisponibles().length > 0) {
+            <select
+              id="periodo-select"
+              class="xml-generator__periodo-select"
+              [(ngModel)]="periodoSeleccionado"
+              (ngModelChange)="onPeriodoChange($event)">
+              @for (p of periodosDisponibles(); track p.codigo) {
+                <option [value]="p.codigoPeriodo">
+                  {{ p.descripcion }} ({{ p.anio }}/{{ p.mes }})
+                </option>
+              }
+            </select>
+          } @else {
+            <span class="xml-generator__periodo-loading">Cargando periodos...</span>
+          }
+        </div>
       </header>
 
       <section class="xml-generator__estructuras-info">
-        <h2 class="xml-generator__section-title">Estructuras XML a Generar</h2>
-        <p class="xml-generator__info-text">Los siguientes formatos deben ser reportados a la Superintendencia:</p>
+        <div class="xml-generator__estructuras-header">
+          <div>
+            <h2 class="xml-generator__section-title">Formatos a Generar</h2>
+            <p class="xml-generator__info-text">
+              Seleccione los formatos que desea incluir en la generación de XML.
+              Total seleccionados: <strong>{{ formatosSeleccionados() }}</strong> de {{ estructurasXml().length }}
+            </p>
+          </div>
+          <div class="xml-generator__format-actions">
+            <button class="xml-generator__link-btn" (click)="seleccionarTodos()">Seleccionar todos</button>
+            <span class="xml-generator__separator">|</span>
+            <button class="xml-generator__link-btn" (click)="deseleccionarTodos()">Deseleccionar todos</button>
+          </div>
+        </div>
         <div class="xml-generator__table-wrapper">
           <table class="xml-generator__table">
             <thead>
               <tr>
+                <th class="xml-generator__th-check"></th>
                 <th>Código</th>
                 <th>Nombre Estructura</th>
                 <th>Nombre Archivo XML</th>
@@ -70,18 +107,27 @@ interface PeriodoInfo {
             </thead>
             <tbody>
               @for (estructura of estructurasXml(); track estructura.codigo) {
-                <tr>
+                <tr [class.xml-generator__row-selected]="estructura.seleccionado">
+                  <td class="xml-generator__td-check">
+                    <input
+                      type="checkbox"
+                      [checked]="estructura.seleccionado"
+                      (change)="toggleFormato(estructura.codigo)"
+                      [id]="'chk-' + estructura.codigo"
+                      class="xml-generator__checkbox" />
+                  </td>
                   <td class="xml-generator__codigo">{{ estructura.codigo }}</td>
-                  <td>{{ estructura.nombreXml }}</td>
+                  <td>
+                    <label [for]="'chk-' + estructura.codigo" class="xml-generator__nombre-label">
+                      {{ estructura.nombreXml }}
+                    </label>
+                  </td>
                   <td class="xml-generator__filename">{{ estructura.nombreArchivo }}</td>
                 </tr>
               }
             </tbody>
           </table>
         </div>
-        <p class="xml-generator__note">
-          Total: {{ estructurasXml().length }} estructuras XML
-        </p>
       </section>
 
       <section class="xml-generator__proyectos">
@@ -96,9 +142,9 @@ interface PeriodoInfo {
             </app-button>
             <app-button
               variant="primary"
-              [disabled]="proyectos().length === 0 || generando()"
+              [disabled]="proyectos().length === 0 || generando() || formatosSeleccionados() === 0"
               (click)="generarTodosLosXmls()">
-              {{ generando() ? 'Generando...' : 'Generar XMLs de Todos los Proyectos' }}
+              {{ generando() ? 'Generando...' : 'Generar XMLs' }}
             </app-button>
           </div>
         </div>
@@ -106,6 +152,9 @@ interface PeriodoInfo {
         <div class="xml-generator__summary">
           <span class="xml-generator__summary-item">
             <strong>{{ proyectos().length }}</strong> proyectos registrados
+          </span>
+          <span class="xml-generator__summary-item">
+            <strong>{{ formatosSeleccionados() }}</strong> formatos seleccionados
           </span>
           <span class="xml-generator__summary-item">
             <strong>{{ totalXmlsAGenerar() }}</strong> XMLs a generar
@@ -136,7 +185,7 @@ interface PeriodoInfo {
                   </span>
                 </div>
                 <div class="xml-generator__proyecto-xmls">
-                  @for (estructura of estructurasXml(); track estructura.codigo) {
+                  @for (estructura of getFormatosSeleccionados(); track estructura.codigo) {
                     <span class="xml-generator__xml-tag" [title]="estructura.nombreXml">
                       {{ estructura.codigo }}
                     </span>
@@ -229,14 +278,11 @@ interface PeriodoInfo {
       color: var(--color-text-secondary);
       margin: 0;
     }
-    .xml-generator__periodo {
+    .xml-generator__periodo-section {
       display: flex;
       flex-direction: column;
-      align-items: flex-end;
       gap: var(--spacing-xs);
-      padding: var(--spacing-md) var(--spacing-lg);
-      background: var(--color-primary-light, #e0f2fe);
-      border-radius: var(--radius-lg);
+      align-items: flex-end;
     }
     .xml-generator__periodo-label {
       font-size: 0.75rem;
@@ -244,23 +290,34 @@ interface PeriodoInfo {
       color: var(--color-text-secondary);
       text-transform: uppercase;
     }
-    .xml-generator__periodo-value {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--color-primary, #0284c7);
+    .xml-generator__periodo-select {
+      padding: var(--spacing-sm) var(--spacing-md);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-background);
+      font-size: 0.875rem;
+      font-weight: 600;
+      min-width: 200px;
+      cursor: pointer;
     }
-    .xml-generator__periodo-desc {
+    .xml-generator__periodo-select:focus {
+      outline: none;
+      border-color: var(--color-primary);
+    }
+    .xml-generator__periodo-loading {
       font-size: 0.875rem;
       color: var(--color-text-secondary);
+      font-style: italic;
     }
     .xml-generator__section-title {
       font-size: 1.125rem;
       font-weight: 600;
-      margin: 0 0 var(--spacing-md) 0;
+      margin: 0 0 var(--spacing-xs) 0;
     }
     .xml-generator__info-text {
       color: var(--color-text-secondary);
-      margin: 0 0 var(--spacing-md) 0;
+      margin: 0;
+      font-size: 0.875rem;
     }
     .xml-generator__estructuras-info {
       background: var(--color-background);
@@ -268,6 +325,32 @@ interface PeriodoInfo {
       border-radius: var(--radius-lg);
       padding: var(--spacing-lg);
       margin-bottom: var(--spacing-xl);
+    }
+    .xml-generator__estructuras-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: var(--spacing-md);
+    }
+    .xml-generator__format-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+    }
+    .xml-generator__link-btn {
+      background: none;
+      border: none;
+      color: var(--color-primary);
+      font-size: 0.75rem;
+      cursor: pointer;
+      padding: 0;
+    }
+    .xml-generator__link-btn:hover {
+      text-decoration: underline;
+    }
+    .xml-generator__separator {
+      color: var(--color-text-secondary);
+      font-size: 0.75rem;
     }
     .xml-generator__table-wrapper {
       overflow-x: auto;
@@ -288,6 +371,24 @@ interface PeriodoInfo {
       font-size: 0.875rem;
       background: var(--color-background-secondary);
     }
+    .xml-generator__th-check {
+      width: 40px;
+    }
+    .xml-generator__td-check {
+      width: 40px;
+      text-align: center;
+    }
+    .xml-generator__checkbox {
+      cursor: pointer;
+      width: 16px;
+      height: 16px;
+    }
+    .xml-generator__row-selected {
+      background: var(--color-primary-light, #e0f2fe22);
+    }
+    .xml-generator__nombre-label {
+      cursor: pointer;
+    }
     .xml-generator__codigo {
       font-family: monospace;
       font-weight: 600;
@@ -297,12 +398,6 @@ interface PeriodoInfo {
       font-family: monospace;
       font-size: 0.875rem;
       color: var(--color-text-secondary);
-    }
-    .xml-generator__note {
-      margin-top: var(--spacing-md);
-      font-size: 0.875rem;
-      color: var(--color-text-secondary);
-      text-align: right;
     }
     .xml-generator__proyectos {
       background: var(--color-background);
@@ -374,6 +469,7 @@ interface PeriodoInfo {
     .xml-generator__proyecto-xmls {
       display: flex;
       gap: var(--spacing-xs);
+      flex-wrap: wrap;
     }
     .xml-generator__xml-tag {
       padding: 2px 6px;
@@ -496,7 +592,9 @@ export class XmlGeneratorComponent implements OnInit {
   private readonly apiService = inject(ApiService);
   private readonly toastService = inject(ToastService);
 
-  periodoActual = signal<{codigoPeriodo: string; descripcion: string; anio: number; mes: number} | null>(null);
+  periodoSeleccionado = '';
+  periodosDisponibles = signal<PeriodoSupersubsidio[]>([]);
+  periodoActual = signal<string>('');
   estructurasXml = signal<EstructuraXml[]>([]);
   proyectos = signal<ProyectoResponse[]>([]);
   archivosGenerados = signal<ArchivoGenerado[]>([]);
@@ -504,8 +602,12 @@ export class XmlGeneratorComponent implements OnInit {
   cargandoProyectos = signal(false);
   generando = signal(false);
 
+  formatosSeleccionados = computed(() =>
+    this.estructurasXml().filter(e => e.seleccionado).length
+  );
+
   totalXmlsAGenerar = computed(() =>
-    this.proyectos().length * this.estructurasXml().length
+    this.proyectos().length * this.formatosSeleccionados()
   );
 
   archivosAgrupadosPorProyecto = computed(() => {
@@ -527,43 +629,74 @@ export class XmlGeneratorComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this.estructurasXml.set(ESTRUCTURAS_XML_INIT);
+    this.cargarPeriodos();
+  }
+
+  cargarPeriodos(): void {
+    this.apiService.getPeriodosSupersubsidio('01').subscribe({
+      next: (periodos) => {
+        if (periodos && periodos.length > 0) {
+          this.periodosDisponibles.set(periodos);
+          this.periodoSeleccionado = periodos[0].codigoPeriodo;
+          this.periodoActual.set(periodos[0].codigoPeriodo);
+        }
+      },
+      error: () => {
+        this.periodosDisponibles.set([{
+          codigo: 1,
+          codigoPeriodo: '202605',
+          fechaInicial: 20260501,
+          fechaFinal: 20260531,
+          descripcion: 'Mayo 2026',
+          periodicidad: 'M',
+          periodicidad2: 'MENSUAL',
+          motivoCodigo: '01',
+          fechaLimiteReporte: 0,
+          fechaLimiteRevision: 0,
+          anio: 2026,
+          mes: 5,
+          codigoAnterior: null,
+          solicitanteCodigo: null,
+          codigoPeriodoTipo: null,
+          codigoInfraestructura: null,
+          motivoCodigoXml: null,
+          codigoPeriodoLq: '202605',
+          nombreMes: 'MAYO',
+          periodoAaaaMm: '2026-05',
+          periodoActivo: 'S'
+        }]);
+        this.periodoSeleccionado = '202605';
+        this.periodoActual.set('202605');
+      }
+    });
+  }
+
+  onPeriodoChange(codigoPeriodo: string): void {
+    this.periodoActual.set(codigoPeriodo);
+  }
+
+  toggleFormato(codigo: string): void {
+    this.estructurasXml.update(lista =>
+      lista.map(e => e.codigo === codigo ? { ...e, seleccionado: !e.seleccionado } : e)
+    );
+  }
+
+  seleccionarTodos(): void {
+    this.estructurasXml.update(lista => lista.map(e => ({ ...e, seleccionado: true })));
+  }
+
+  deseleccionarTodos(): void {
+    this.estructurasXml.update(lista => lista.map(e => ({ ...e, seleccionado: false })));
+  }
+
+  getFormatosSeleccionados(): EstructuraXml[] {
+    return this.estructurasXml().filter(e => e.seleccionado);
   }
 
   cargarTodo(): void {
     this.cargandoProyectos.set(true);
-    this.cargarEstructurasXml();
-    this.cargarPeriodoActivo();
     this.cargarProyectos();
-  }
-
-  cargarPeriodoActivo(): void {
-    this.apiService.getPeriodosSupersubsidio('01').subscribe({
-      next: (periodos) => {
-        if (periodos && periodos.length > 0) {
-          const periodo = periodos[0];
-          this.periodoActual.set({
-            codigoPeriodo: periodo.codigoPeriodo,
-            descripcion: periodo.descripcion || `${periodo.anio}`,
-            anio: periodo.anio,
-            mes: periodo.mes
-          });
-        }
-      },
-      error: (err) => {
-        console.warn('No se pudo cargar periodo de Supersubsidio:', err.statusText);
-      }
-    });
-  }
-
-  cargarEstructurasXml(): void {
-    this.apiService.getEstructurasDisponibles().subscribe({
-      next: (estructuras) => {
-        this.estructurasXml.set(estructuras);
-      },
-      error: (err) => {
-        console.warn('No se pudieron cargar estructuras XML:', err.statusText);
-      }
-    });
   }
 
   cargarProyectos(): void {
@@ -579,7 +712,6 @@ export class XmlGeneratorComponent implements OnInit {
           proyectoCodigo: '',
           mensaje: 'Error cargando proyectos: ' + (err.statusText || err.message || 'Error del servidor')
         }]);
-        console.error('Error cargando proyectos:', err);
       }
     });
   }
@@ -588,6 +720,12 @@ export class XmlGeneratorComponent implements OnInit {
     const periodo = this.periodoActual();
     if (!periodo) {
       this.toastService.error('No hay periodo activo definido');
+      return;
+    }
+
+    const formatosActivos = this.getFormatosSeleccionados();
+    if (formatosActivos.length === 0) {
+      this.toastService.error('Debe seleccionar al menos un formato');
       return;
     }
 
@@ -602,13 +740,13 @@ export class XmlGeneratorComponent implements OnInit {
     let fallidos = 0;
 
     for (const proyecto of proyectos) {
-      this.apiService.generarZipXml(proyecto.id).subscribe({
+      this.apiService.generarZipXml(proyecto.id, periodo).subscribe({
         next: (blob) => {
           this.archivosGenerados.update(files => [...files, {
             proyectoId: proyecto.id,
             proyectoCodigo: proyecto.codigo,
             estructuraCodigo: 'ZIP',
-            nombreArchivo: `${proyecto.codigo}_xmls_${periodo.codigoPeriodo}.zip`,
+            nombreArchivo: `${proyecto.codigo}_xmls_${periodo}.zip`,
             contenido: '',
             tamano: this.formatearTamano(blob.size)
           }]);
@@ -642,7 +780,8 @@ export class XmlGeneratorComponent implements OnInit {
   }
 
   descargarZipProyecto(proyectoId: string, proyectoCodigo: string): void {
-    this.apiService.generarZipXml(proyectoId).subscribe({
+    const periodo = this.periodoActual();
+    this.apiService.generarZipXml(proyectoId, periodo).subscribe({
       next: (blob) => {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');

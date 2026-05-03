@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ButtonComponent } from '../../../shared/atoms/button/button.component';
 import { FormFieldComponent } from '../../../shared/molecules/form-field/form-field.component';
 import { EstructuraService } from '../../../core/services/estructura.service';
-import { P002ACronograma, P002AActividad, EstructuraGuardadaEvent } from '../../../core/models/estructura.model';
+import { P002ACronograma, P002ACronogramaActividad, EstructuraGuardadaEvent } from '../../../core/models/estructura.model';
 
 interface ActividadForm {
   tipoActividad: string;
@@ -72,10 +72,10 @@ export class CronogramaFormComponent implements OnInit {
     this.estructuraService.obtenerP002A(codigo).subscribe({
       next: (data) => {
         if (data && data.actividades && data.actividades.length > 0) {
-          this.datos.actividades = data.actividades.map((act) => ({
+          this.datos.actividades = data.actividades.map((act: P002ACronogramaActividad) => ({
             tipoActividad: act.tipoActividad || '',
-            descripcion: act.descripcion || '',
-            porcentaje: act.porcentaje || 0,
+            descripcion: act.descripcionActividad || (act as any).descripcion || '',
+            porcentaje: act.porcentajeProyectado ? parseFloat(act.porcentajeProyectado) : (act as any).porcentaje || 0,
             fechaInicio: act.fechaInicio || '',
             fechaTerminacion: act.fechaTerminacion || ''
           }));
@@ -125,9 +125,20 @@ export class CronogramaFormComponent implements OnInit {
       return;
     }
 
+    const actividades: P002ACronogramaActividad[] = this.datos.actividades.map(act => ({
+      tipoActividad: act.tipoActividad,
+      descripcionActividad: act.descripcion,
+      porcentajeProyectado: act.porcentaje.toFixed(2),
+      fechaInicio: act.fechaInicio,
+      fechaTerminacion: act.fechaTerminacion,
+      unidadMedida: undefined,
+      cantidadProgramada: undefined
+    }));
+
     const cronograma: P002ACronograma = {
       codigoProyecto: this.datos.codigoProyecto,
-      actividades: this.datos.actividades
+      actividades: actividades,
+      porcentajeTotal: this.sumaPorcentajes.toFixed(2)
     };
 
     this.guardando.set(true);

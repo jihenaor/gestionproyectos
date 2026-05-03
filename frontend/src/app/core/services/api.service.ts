@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import {
   ProyectoResponse,
   PaginatedResponse,
@@ -16,19 +17,27 @@ import { EstructurasResponse } from '../models/estructura.model';
 import { environment } from '../../../environments/environment';
 
 export interface PeriodoSupersubsidio {
-  anio: number;
   codigo: number;
   codigoPeriodo: string;
-  codigoPeriodoLq: string;
-  descripcion: string;
-  fechaFinal: number;
   fechaInicial: number;
+  fechaFinal: number;
+  descripcion: string;
+  periodicidad: string;
+  periodicidad2: string;
+  motivoCodigo: string;
   fechaLimiteReporte: number;
   fechaLimiteRevision: number;
+  anio: number;
   mes: number;
+  codigoAnterior: number | null;
+  solicitanteCodigo: number | null;
+  codigoPeriodoTipo: string | null;
+  codigoInfraestructura: number | null;
+  motivoCodigoXml: string | null;
+  codigoPeriodoLq: string | null;
   nombreMes: string | null;
-  periodicidad: string;
-  solicitanteCodigo: number;
+  periodoAaaaMm: string | null;
+  periodoActivo: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -106,9 +115,11 @@ export class ApiService {
     });
   }
 
-  generarZipXml(proyectoId: string): Observable<Blob> {
+  generarZipXml(proyectoId: string, codigoPeriodo?: string): Observable<Blob> {
+    const params = codigoPeriodo ? new HttpParams().set('codigoPeriodo', codigoPeriodo) : undefined;
     return this.http.get(`${this.baseUrl}/generacion-xml-informes/xml/proyecto/${proyectoId}`, {
-      responseType: 'blob'
+      responseType: 'blob',
+      params
     });
   }
 
@@ -119,15 +130,15 @@ export class ApiService {
   }
 
   getPeriodosSupersubsidio(mocodmotiv = '01'): Observable<PeriodoSupersubsidio[]> {
-    const token = this.getAuthToken();
-    let headers = new HttpHeaders();
-    if (token) {
-      headers = headers.set('Authorization', `Bearer ${token}`);
-    }
     const params = new HttpParams().set('mocodmotiv', mocodmotiv);
     return this.http.get<PeriodoSupersubsidio[]>(
       `${this.ciefApiUrl}/parametrizacion/periodos-reporte`,
-      { headers, params }
+      { params }
+    ).pipe(
+      map(periodos => {
+        const activos = periodos.filter(p => p.periodoActivo === 'S');
+        return activos.length > 0 ? activos : periodos;
+      })
     );
   }
 

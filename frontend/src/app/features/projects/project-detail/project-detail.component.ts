@@ -64,8 +64,8 @@ import { DocumentosManagerComponent } from '../../documentos/documentos-manager/
             [class.active]="tabActivo() === tab.codigo"
             [class.completado]="estructurasCompletadas().includes(tab.codigo)"
             (click)="seleccionarTab(tab.codigo)">
-            {{ tab.codigo }}
             <span class="project-detail__tab-name">{{ tab.nombre }}</span>
+            <span class="project-detail__tab-code">{{ tab.codigo }}</span>
             @if (estructurasCompletadas().includes(tab.codigo)) {
               <span class="project-detail__tab-check">✓</span>
             }
@@ -219,9 +219,7 @@ import { DocumentosManagerComponent } from '../../documentos/documentos-manager/
       flex-direction: column;
       align-items: center;
       gap: 2px;
-      font-weight: 600;
-      font-size: 0.75rem;
-      min-width: 80px;
+      min-width: 100px;
       position: relative;
     }
     .project-detail__tab:hover {
@@ -240,16 +238,24 @@ import { DocumentosManagerComponent } from '../../documentos/documentos-manager/
       background: var(--color-success);
     }
     .project-detail__tab-name {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--color-text-primary);
+      text-align: center;
+      white-space: normal;
+      word-break: break-word;
+    }
+    .project-detail__tab.active .project-detail__tab-name {
+      color: white;
+    }
+    .project-detail__tab-code {
       font-size: 0.625rem;
       font-weight: 400;
       color: var(--color-text-secondary);
-      max-width: 80px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      font-family: monospace;
     }
-    .project-detail__tab.active .project-detail__tab-name {
-      color: rgba(255,255,255,0.8);
+    .project-detail__tab.active .project-detail__tab-code {
+      color: rgba(255,255,255,0.7);
     }
     .project-detail__tab-check {
       position: absolute;

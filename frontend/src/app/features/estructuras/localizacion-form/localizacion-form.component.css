@@ -1,1 +1,5 @@
 @import '../estructura-form.styles.css';
+
+.estructura-form {
+  max-width: 900px;
+}

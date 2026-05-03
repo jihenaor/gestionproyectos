@@ -17,6 +17,7 @@
         <input
           type="text"
           id="codigo"
+          name="codigoProyecto"
           class="form-input"
           [(ngModel)]="datos.codigoProyecto"
           disabled
@@ -32,6 +33,7 @@
         <input
           type="text"
           id="nombre"
+          name="nombreProyecto"
           class="form-input"
           [(ngModel)]="datos.nombreProyecto"
           maxlength="200" />
@@ -46,6 +48,7 @@
         tableReference="Tabla 32">
         <select
           id="modalidad"
+          name="modalidadInversion"
           class="form-select"
           [(ngModel)]="datos.modalidadInversion">
           <option value="">Seleccione...</option>
@@ -66,6 +69,7 @@
         <input
           type="number"
           id="valorTotal"
+          name="valorTotalProyecto"
           class="form-input"
           [(ngModel)]="datos.valorTotalProyecto" />
       </app-form-field>
@@ -79,6 +83,7 @@
         <input
           type="number"
           id="valorAprobado"
+          name="valorAprobadoVigencia"
           class="form-input"
           [(ngModel)]="datos.valorAprobadoVigencia" />
       </app-form-field>
@@ -89,6 +94,7 @@
         [isRequired]="true">
         <select
           id="resolucion"
+          name="resolucionAEI"
           class="form-select"
           [(ngModel)]="datos.resolucionAEI">
           <option [ngValue]="1">Sí - Cuenta con resolución AEI</option>
@@ -100,7 +106,6 @@
     <app-form-field
       label="Justificación del Proyecto"
       fieldId="justificacion"
-      fieldType="custom"
       [isRequired]="true"
       description="Describe la necesidad y beneficios del proyecto. Puede usar listas y viñetas."
       [maxLength]="4000"
@@ -116,7 +121,6 @@
     <app-form-field
       label="Objetivos del Proyecto"
       fieldId="objetivos"
-      fieldType="custom"
       [isRequired]="true"
       description="Liste los objetivos específicos del proyecto"
       [maxLength]="2000">
@@ -135,6 +139,7 @@
         <input
           type="text"
           id="numActa"
+          name="numActa"
           class="form-input"
           [(ngModel)]="datos.numActa" />
       </app-form-field>
@@ -147,6 +152,7 @@
         <input
           type="number"
           id="numConsejeros"
+          name="numConsejeros"
           class="form-input"
           [(ngModel)]="datos.numConsejeros" />
       </app-form-field>
@@ -160,11 +166,13 @@
         <input
           type="number"
           id="tiempoRec"
+          name="tiempoRecuperacion"
           class="form-input"
           [(ngModel)]="datos.tiempoRecuperacion" />
       </app-form-field>
 
       <app-form-field
+        fieldType="custom"
         label="Tasa de Descuento"
         fieldId="tasa"
         formatExample="12.50">

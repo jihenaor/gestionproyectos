@@ -1,4 +1,4 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, computed, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -21,16 +21,20 @@ import { CommonModule } from '@angular/common';
                   d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
           </svg>
           <p class="file-upload__text">
-            Arrastra el archivo PDF aquí o
+            @if (fileKind() === 'excel') {
+              Arrastra el archivo Excel aquí o
+            } @else {
+              Arrastra el archivo PDF aquí o
+            }
             <label class="file-upload__browse">
               busca tu archivo
               <input type="file"
-                     accept="application/pdf"
+                     [attr.accept]="acceptAttribute()"
                      (change)="onFileSelect($event)"
                      class="file-upload__input" />
             </label>
           </p>
-          <p class="file-upload__hint">Formato: PDF | Tamaño máximo: 50MB</p>
+          <p class="file-upload__hint">{{ hintText() }}</p>
         </div>
       } @else {
         <div class="file-upload__file-info">
@@ -208,9 +212,27 @@ import { CommonModule } from '@angular/common';
   `]
 })
 export class FileUploadComponent {
-  accept = input<string>('application/pdf');
+  /**
+   * `pdf`: solo lectura/carga de PDF (documentos).
+   * `excel`: solo .xlsx / .xls — validación por extensión y MIME (defensa además del atributo `accept`).
+   */
+  fileKind = input<'pdf' | 'excel'>('pdf');
+
   maxSizeMb = input<number>(50);
   disabled = input<boolean>(false);
+
+  /** Valor del atributo HTML `accept` según `fileKind`. */
+  readonly acceptAttribute = computed(() =>
+    this.fileKind() === 'excel'
+      ? '.xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel'
+      : 'application/pdf'
+  );
+
+  readonly hintText = computed(() =>
+    this.fileKind() === 'excel'
+      ? `Formato: Excel (.xlsx, .xls) — no CSV | Tamaño máximo: ${this.maxSizeMb()}MB`
+      : `Formato: PDF | Tamaño máximo: ${this.maxSizeMb()}MB`
+  );
 
   fileSelected = output<File>();
   uploadStart = output<void>();
@@ -263,7 +285,13 @@ export class FileUploadComponent {
     this.hasError.set(false);
     this.errorMessage.set('');
 
-    if (file.type !== 'application/pdf') {
+    if (this.fileKind() === 'excel') {
+      if (!this.isAllowedExcel(file)) {
+        this.hasError.set(true);
+        this.errorMessage.set('Solo se permiten archivos Excel (.xlsx o .xls). No CSV ni otros formatos.');
+        return;
+      }
+    } else if (!this.isAllowedPdf(file)) {
       this.hasError.set(true);
       this.errorMessage.set('Solo se permiten archivos PDF');
       return;
@@ -302,6 +330,31 @@ export class FileUploadComponent {
   clearError() {
     this.hasError.set(false);
     this.errorMessage.set('');
+  }
+
+  private isAllowedPdf(file: File): boolean {
+    if (file.type === 'application/pdf') {
+      return true;
+    }
+    const n = file.name.toLowerCase();
+    return n.endsWith('.pdf') && (!file.type || file.type === 'application/octet-stream');
+  }
+
+  private isAllowedExcel(file: File): boolean {
+    const n = file.name.toLowerCase();
+    if (!n.endsWith('.xlsx') && !n.endsWith('.xls')) {
+      return false;
+    }
+    const t = file.type;
+    if (!t) {
+      return true;
+    }
+    return (
+      t === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+      t === 'application/vnd.ms-excel' ||
+      t === 'application/vnd.ms-excel.sheet.macroEnabled.12' ||
+      t === 'application/octet-stream'
+    );
   }
 
   formatSize(bytes: number): string {
