@@ -1,0 +1,119 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+
+# ── Fragmento reutilizable: detección de JAVA_HOME ───────────────────────────
+.java_env: &java_env
+  before_script:
+    - chmod +x gradlew scripts/detect-changed-services.sh 2>/dev/null || true
+    - export GRADLE_USER_HOME=`pwd`/.gradle
+    - |
+      if [ -z "$JAVA_HOME" ] || [ ! -x "$JAVA_HOME/bin/java" ]; then
+        java_bin=$(command -v java 2>/dev/null)
+        if [ -n "$java_bin" ]; then
+          java_real=$(readlink -f "$java_bin" 2>/dev/null || echo "$java_bin")
+          if [ -n "$java_real" ]; then
+            cand=$(dirname "$java_real"); cand=$(dirname "$cand")
+            if [ -d "$cand" ] && [ -x "$cand/bin/java" ]; then export JAVA_HOME="$cand"; fi
+          fi
+        fi
+        if [ -z "$JAVA_HOME" ]; then
+          for d in /usr/lib/jvm/java-21-openjdk-amd64 /usr/lib/jvm/java-21-openjdk /usr/lib/jvm/java-17-openjdk-amd64 /usr/lib/jvm/java-17-openjdk /usr/lib/jvm/java-11-openjdk-amd64 /usr/lib/jvm/java-11-openjdk /usr/java/latest /usr/java/default /opt/java /opt/jdk; do
+            if [ -d "$d" ] && [ -x "$d/bin/java" ]; then export JAVA_HOME="$d"; break; fi
+          done
+        fi
+      fi
+    - |
+      if [ -z "$JAVA_HOME" ]; then
+        echo "ERROR: JAVA_HOME no encontrado."
+        echo "Configure la variable CI/CD JAVA_HOME en GitLab: Settings → CI/CD → Variables"
+        echo "Valor: resultado de readlink -f \$(which java) | sed 's|/bin/java||'"
+        exit 1
+      fi
+    - export PATH="$JAVA_HOME/bin:$PATH"
+
+# ── Build: Java + Angular ────────────────────────────────────────────────────
+build-all:
+  stage: build
+  tags:
+    - produccion
+  <<: *java_env
+  cache:
+    - key: gradle-$CI_COMMIT_REF_SLUG
+      paths:
+        - .gradle/wrapper
+        - .gradle/caches
+    - key: jars-$CI_PIPELINE_ID
+      paths:
+        - "backend/build/libs/"
+        - "frontend/dist/"
+      policy: push
+  script:
+    - |
+      # Detectar servicios con cambios
+      DETECTED=$(./scripts/detect-changed-services.sh 2>/dev/null || echo "")
+      echo "$DETECTED" > .changed_services
+      echo "Servicios con cambios: ${DETECTED:-ninguno detectado}"
+    - |
+      # Compilar backend Java
+      cd backend
+      ./gradlew bootJar -x test --no-daemon --console=plain
+      cd ..
+    - |
+      # Compilar frontend Angular
+      cd frontend
+      npm ci --prefer-offline --no-audit || npm ci
+      npm run build -- --configuration production --base-href=/gestionproyectos/ --deploy-url=/gestionproyectos/
+      cd ..
+    - echo "Build completado"
+  artifacts:
+    paths:
+      - .changed_services
+      - backend/build/libs/
+      - frontend/dist/
+    expire_in: 4 hours
+
+# ── Deploy ────────────────────────────────────────────────────────────────────
+deploy:
+  stage: deploy
+  tags:
+    - produccion
+  needs:
+    - job: build-all
+      artifacts: true
+  resource_group: production-deploy
+  cache:
+    - key: jars-$CI_PIPELINE_ID
+      paths:
+        - backend/build/libs/
+        - frontend/dist/
+      policy: pull
+  variables:
+    CI: "true"
+    DOCKER_TARGET: "prebuilt"
+  script:
+    - chmod +x deploy.sh scripts/verify-deployment.sh 2>/dev/null || true
+    - |
+      # Copiar JAR precompilado a prebuilt-jars/ para que Docker lo use sin recompilar
+      mkdir -p prebuilt-jars
+      JAR=$(find "backend/build/libs/" -name "*.jar" -not -name "*-plain.jar" 2>/dev/null | head -1 || true)
+      if [ -n "$JAR" ]; then
+        cp "$JAR" "prebuilt-jars/gestionproyectos.jar"
+        echo "  [OK]   gestionproyectos.jar <- $(basename $JAR)"
+      else
+        echo "  [MISS] bootJar no encontrado — se compilara dentro de Docker"
+        export DOCKER_TARGET=final
+      fi
+    - echo "Desplegando Gestion de Proyectos en producción..."
+    - export DOCKER_BUILDKIT=1
+    - export COMPOSE_DOCKER_CLI_BUILD=1
+    - ./deploy.sh
+    - echo "Validando despliegue..."
+    - ./scripts/verify-deployment.sh
+  environment:
+    name: production
+  only:
+    - main

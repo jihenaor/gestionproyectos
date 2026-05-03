@@ -65,3 +65,21 @@ backend/logs/
 *.tsbuildinfo
 *.xsd
 backend/bin/
+
+# JAR copiado localmente para imágenes Docker (pesado, generado)
+backend/prebuilt-jars/
+
+# Scripts con credenciales SSH en claro: mantener solo en máquina local o sustituir por variables de entorno antes de versionar.
+scripts/ssh-deploy.py
+scripts/ssh-deploy.ps1
+scripts/pull-status.py
+scripts/download-jar.py
+scripts/deploy-to-server.py
+scripts/check-cief-endpoint.py
+scripts/check-docker-network.py
+scripts/check-gradlew.py
+scripts/check-jar.py
+scripts/check-networks.py
+scripts/check-nginx-config.py
+scripts/check-nginx.py
+scripts/add-nginx-routes.py
