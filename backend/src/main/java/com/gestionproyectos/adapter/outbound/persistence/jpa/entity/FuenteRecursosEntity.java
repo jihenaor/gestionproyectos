@@ -1,13 +1,16 @@
 package com.gestionproyectos.adapter.outbound.persistence.jpa.entity;
 
 import jakarta.persistence.*;
-import java.util.UUID;
-
+import lombok.Data;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 @Entity
-@Table(name = "FUENTE_RECURSOS")
+@Table(name = "GP_FUENTE_RECURSOS")
+@Data
 public class FuenteRecursosEntity {
 
     @Id
@@ -37,34 +40,5 @@ public class FuenteRecursosEntity {
     private String centroCosto;
 
     @Column(name = "FEC_CREACION")
-    private java.time.LocalDateTime fechaCreacion;
-
-    public FuenteRecursosEntity() {}
-
-    public UUID getId() { return id; }
-    public void setId(UUID id) { this.id = id; }
-
-    public UUID getIdProyecto() { return idProyecto; }
-    public void setIdProyecto(UUID idProyecto) { this.idProyecto = idProyecto; }
-
-    public String getCodFuente() { return codFuente; }
-    public void setCodFuente(String codFuente) { this.codFuente = codFuente; }
-
-    public String getDescFuente() { return descFuente; }
-    public void setDescFuente(String descFuente) { this.descFuente = descFuente; }
-
-    public Long getValorAsignado() { return valorAsignado; }
-    public void setValorAsignado(Long valorAsignado) { this.valorAsignado = valorAsignado; }
-
-    public String getPorcentaje() { return porcentaje; }
-    public void setPorcentaje(String porcentaje) { this.porcentaje = porcentaje; }
-
-    public String getTipoRecurso() { return tipoRecurso; }
-    public void setTipoRecurso(String tipoRecurso) { this.tipoRecurso = tipoRecurso; }
-
-    public String getCentroCosto() { return centroCosto; }
-    public void setCentroCosto(String centroCosto) { this.centroCosto = centroCosto; }
-
-    public java.time.LocalDateTime getFechaCreacion() { return fechaCreacion; }
-    public void setFechaCreacion(java.time.LocalDateTime fechaCreacion) { this.fechaCreacion = fechaCreacion; }
+    private LocalDateTime fechaCreacion;
 }

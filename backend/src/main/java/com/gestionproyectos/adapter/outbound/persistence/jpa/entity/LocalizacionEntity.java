@@ -1,13 +1,17 @@
 package com.gestionproyectos.adapter.outbound.persistence.jpa.entity;
 
 import jakarta.persistence.*;
-import java.util.UUID;
-
+import lombok.Data;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 @Entity
-@Table(name = "LOCALIZACION")
+@Table(name = "GP_LOCALIZACION")
+@Data
 public class LocalizacionEntity {
 
     @Id
@@ -40,49 +44,11 @@ public class LocalizacionEntity {
     private String fechaInicioOperacion;
 
     @Column(name = "LATITUD")
-    private java.math.BigDecimal latitud;
+    private BigDecimal latitud;
 
     @Column(name = "LONGITUD")
-    private java.math.BigDecimal longitud;
+    private BigDecimal longitud;
 
     @Column(name = "FEC_CREACION")
-    private java.time.LocalDateTime fechaCreacion;
-
-    public LocalizacionEntity() {}
-
-    public UUID getId() { return id; }
-    public void setId(UUID id) { this.id = id; }
-
-    public UUID getIdProyecto() { return idProyecto; }
-    public void setIdProyecto(UUID idProyecto) { this.idProyecto = idProyecto; }
-
-    public String getDepartamento() { return departamento; }
-    public void setDepartamento(String departamento) { this.departamento = departamento; }
-
-    public String getMunicipio() { return municipio; }
-    public void setMunicipio(String municipio) { this.municipio = municipio; }
-
-    public String getDireccion() { return direccion; }
-    public void setDireccion(String direccion) { this.direccion = direccion; }
-
-    public String getBarrio() { return barrio; }
-    public void setBarrio(String barrio) { this.barrio = barrio; }
-
-    public String getTelefono() { return telefono; }
-    public void setTelefono(String telefono) { this.telefono = telefono; }
-
-    public String getContacto() { return contacto; }
-    public void setContacto(String contacto) { this.contacto = contacto; }
-
-    public String getFechaInicioOperacion() { return fechaInicioOperacion; }
-    public void setFechaInicioOperacion(String fechaInicioOperacion) { this.fechaInicioOperacion = fechaInicioOperacion; }
-
-    public java.math.BigDecimal getLatitud() { return latitud; }
-    public void setLatitud(java.math.BigDecimal latitud) { this.latitud = latitud; }
-
-    public java.math.BigDecimal getLongitud() { return longitud; }
-    public void setLongitud(java.math.BigDecimal longitud) { this.longitud = longitud; }
-
-    public java.time.LocalDateTime getFechaCreacion() { return fechaCreacion; }
-    public void setFechaCreacion(java.time.LocalDateTime fechaCreacion) { this.fechaCreacion = fechaCreacion; }
+    private LocalDateTime fechaCreacion;
 }

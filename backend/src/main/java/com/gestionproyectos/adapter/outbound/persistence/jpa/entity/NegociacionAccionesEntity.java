@@ -1,13 +1,16 @@
 package com.gestionproyectos.adapter.outbound.persistence.jpa.entity;
 
 import jakarta.persistence.*;
-import java.util.UUID;
-
+import lombok.Data;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 @Entity
-@Table(name = "NEGOCIACION_ACCIONES")
+@Table(name = "GP_NEGOCIACION_ACCIONES")
+@Data
 public class NegociacionAccionesEntity {
 
     @Id
@@ -34,31 +37,5 @@ public class NegociacionAccionesEntity {
     private Long valorMercadoAcciones;
 
     @Column(name = "FEC_CREACION")
-    private java.time.LocalDateTime fechaCreacion;
-
-    public NegociacionAccionesEntity() {}
-
-    public UUID getId() { return id; }
-    public void setId(UUID id) { this.id = id; }
-
-    public UUID getIdProyecto() { return idProyecto; }
-    public void setIdProyecto(UUID idProyecto) { this.idProyecto = idProyecto; }
-
-    public Integer getNumAccionesCuotas() { return numAccionesCuotas; }
-    public void setNumAccionesCuotas(Integer numAccionesCuotas) { this.numAccionesCuotas = numAccionesCuotas; }
-
-    public Long getValorAccionesCuotas() { return valorAccionesCuotas; }
-    public void setValorAccionesCuotas(Long valorAccionesCuotas) { this.valorAccionesCuotas = valorAccionesCuotas; }
-
-    public String getPorcentajeParticipacion() { return porcentajeParticipacion; }
-    public void setPorcentajeParticipacion(String porcentajeParticipacion) { this.porcentajeParticipacion = porcentajeParticipacion; }
-
-    public Long getValorNominalAcciones() { return valorNominalAcciones; }
-    public void setValorNominalAcciones(Long valorNominalAcciones) { this.valorNominalAcciones = valorNominalAcciones; }
-
-    public Long getValorMercadoAcciones() { return valorMercadoAcciones; }
-    public void setValorMercadoAcciones(Long valorMercadoAcciones) { this.valorMercadoAcciones = valorMercadoAcciones; }
-
-    public java.time.LocalDateTime getFechaCreacion() { return fechaCreacion; }
-    public void setFechaCreacion(java.time.LocalDateTime fechaCreacion) { this.fechaCreacion = fechaCreacion; }
+    private LocalDateTime fechaCreacion;
 }

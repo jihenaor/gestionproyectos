@@ -1,13 +1,16 @@
 package com.gestionproyectos.adapter.outbound.persistence.jpa.entity;
 
 import jakarta.persistence.*;
-import java.util.UUID;
-
+import lombok.Data;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 @Entity
-@Table(name = "FONDOS_CREDITO")
+@Table(name = "GP_FONDOS_CREDITO")
+@Data
 public class FondosCreditoEntity {
 
     @Id
@@ -43,40 +46,5 @@ public class FondosCreditoEntity {
     private String porcentajeSubsidio;
 
     @Column(name = "FEC_CREACION")
-    private java.time.LocalDateTime fechaCreacion;
-
-    public FondosCreditoEntity() {}
-
-    public UUID getId() { return id; }
-    public void setId(UUID id) { this.id = id; }
-
-    public UUID getIdProyecto() { return idProyecto; }
-    public void setIdProyecto(UUID idProyecto) { this.idProyecto = idProyecto; }
-
-    public Integer getModalidadCredito() { return modalidadCredito; }
-    public void setModalidadCredito(Integer modalidadCredito) { this.modalidadCredito = modalidadCredito; }
-
-    public Integer getCodCategoria() { return codCategoria; }
-    public void setCodCategoria(Integer codCategoria) { this.codCategoria = codCategoria; }
-
-    public String getTasaInteresMinima() { return tasaInteresMinima; }
-    public void setTasaInteresMinima(String tasaInteresMinima) { this.tasaInteresMinima = tasaInteresMinima; }
-
-    public String getTasaInteresMaxima() { return tasaInteresMaxima; }
-    public void setTasaInteresMaxima(String tasaInteresMaxima) { this.tasaInteresMaxima = tasaInteresMaxima; }
-
-    public Integer getCantCreditos() { return cantCreditos; }
-    public void setCantCreditos(Integer cantCreditos) { this.cantCreditos = cantCreditos; }
-
-    public Long getValMontoCreditos() { return valMontoCreditos; }
-    public void setValMontoCreditos(Long valMontoCreditos) { this.valMontoCreditos = valMontoCreditos; }
-
-    public Integer getPlazoCredito() { return plazoCredito; }
-    public void setPlazoCredito(Integer plazoCredito) { this.plazoCredito = plazoCredito; }
-
-    public String getPorcentajeSubsidio() { return porcentajeSubsidio; }
-    public void setPorcentajeSubsidio(String porcentajeSubsidio) { this.porcentajeSubsidio = porcentajeSubsidio; }
-
-    public java.time.LocalDateTime getFechaCreacion() { return fechaCreacion; }
-    public void setFechaCreacion(java.time.LocalDateTime fechaCreacion) { this.fechaCreacion = fechaCreacion; }
+    private LocalDateTime fechaCreacion;
 }

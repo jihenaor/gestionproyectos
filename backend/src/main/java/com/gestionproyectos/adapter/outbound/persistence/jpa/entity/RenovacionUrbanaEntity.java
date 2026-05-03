@@ -1,13 +1,15 @@
 package com.gestionproyectos.adapter.outbound.persistence.jpa.entity;
 
 import jakarta.persistence.*;
-import java.util.UUID;
-
+import lombok.Data;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.util.UUID;
+
 @Entity
-@Table(name = "RENOVACION_URBANA")
+@Table(name = "FV_RENOVACION_URBANA")
+@Data
 public class RenovacionUrbanaEntity {
 
     @Id
@@ -20,15 +22,4 @@ public class RenovacionUrbanaEntity {
 
     @Column(name = "NUM_SOLUCIONES_VIV", nullable = false)
     private Integer numSolucionesViv;
-
-    public RenovacionUrbanaEntity() {}
-
-    public UUID getId() { return id; }
-    public void setId(UUID id) { this.id = id; }
-
-    public UUID getIdProyectoFovis() { return idProyectoFovis; }
-    public void setIdProyectoFovis(UUID idProyectoFovis) { this.idProyectoFovis = idProyectoFovis; }
-
-    public Integer getNumSolucionesViv() { return numSolucionesViv; }
-    public void setNumSolucionesViv(Integer numSolucionesViv) { this.numSolucionesViv = numSolucionesViv; }
 }

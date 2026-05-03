@@ -1,13 +1,15 @@
 package com.gestionproyectos.adapter.outbound.persistence.jpa.entity;
 
 import jakarta.persistence.*;
-import java.util.UUID;
-
+import lombok.Data;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.util.UUID;
+
 @Entity
-@Table(name = "TIPOLOGIA_VIS")
+@Table(name = "FV_TIPOLOGIA_VIS")
+@Data
 public class TipologiaVisEntity {
 
     @Id
@@ -29,24 +31,4 @@ public class TipologiaVisEntity {
 
     @Column(name = "NUMERO_UNIDADES", nullable = false)
     private Integer numeroUnidades;
-
-    public TipologiaVisEntity() {}
-
-    public UUID getId() { return id; }
-    public void setId(UUID id) { this.id = id; }
-
-    public UUID getIdProyectoFovis() { return idProyectoFovis; }
-    public void setIdProyectoFovis(UUID idProyectoFovis) { this.idProyectoFovis = idProyectoFovis; }
-
-    public Integer getCodTipologia() { return codTipologia; }
-    public void setCodTipologia(Integer codTipologia) { this.codTipologia = codTipologia; }
-
-    public String getAreaUnidadConstruccion() { return areaUnidadConstruccion; }
-    public void setAreaUnidadConstruccion(String areaUnidadConstruccion) { this.areaUnidadConstruccion = areaUnidadConstruccion; }
-
-    public Long getValorVenta() { return valorVenta; }
-    public void setValorVenta(Long valorVenta) { this.valorVenta = valorVenta; }
-
-    public Integer getNumeroUnidades() { return numeroUnidades; }
-    public void setNumeroUnidades(Integer numeroUnidades) { this.numeroUnidades = numeroUnidades; }
 }

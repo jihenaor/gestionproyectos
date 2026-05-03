@@ -1,13 +1,16 @@
 package com.gestionproyectos.adapter.outbound.persistence.jpa.entity;
 
 import jakarta.persistence.*;
-import java.util.UUID;
-
+import lombok.Data;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 @Entity
-@Table(name = "INFRAESTRUCTURA")
+@Table(name = "GP_INFRAESTRUCTURA")
+@Data
 public class InfraestructuraEntity {
 
     @Id
@@ -97,94 +100,5 @@ public class InfraestructuraEntity {
     private Integer proyeccionGeneracionEmpleo;
 
     @Column(name = "FEC_CREACION")
-    private java.time.LocalDateTime fechaCreacion;
-
-    public InfraestructuraEntity() {}
-
-    public UUID getId() { return id; }
-    public void setId(UUID id) { this.id = id; }
-
-    public UUID getIdProyecto() { return idProyecto; }
-    public void setIdProyecto(UUID idProyecto) { this.idProyecto = idProyecto; }
-
-    public Integer getInterventoriaSupervision() { return interventoriaSupervision; }
-    public void setInterventoriaSupervision(Integer interventoriaSupervision) { this.interventoriaSupervision = interventoriaSupervision; }
-
-    public Long getValorTotalInterventoria() { return valorTotalInterventoria; }
-    public void setValorTotalInterventoria(Long valorTotalInterventoria) { this.valorTotalInterventoria = valorTotalInterventoria; }
-
-    public Integer getLicenciaConstruccion() { return licenciaConstruccion; }
-    public void setLicenciaConstruccion(Integer licenciaConstruccion) { this.licenciaConstruccion = licenciaConstruccion; }
-
-    public String getEntCompetente() { return entCompetente; }
-    public void setEntCompetente(String entCompetente) { this.entCompetente = entCompetente; }
-
-    public String getNumRadicadoSolicitudLicencia() { return numRadicadoSolicitudLicencia; }
-    public void setNumRadicadoSolicitudLicencia(String numRadicadoSolicitudLicencia) { this.numRadicadoSolicitudLicencia = numRadicadoSolicitudLicencia; }
-
-    public String getFechaRadicacionSolicitudLicencia() { return fechaRadicacionSolicitudLicencia; }
-    public void setFechaRadicacionSolicitudLicencia(String fechaRadicacionSolicitudLicencia) { this.fechaRadicacionSolicitudLicencia = fechaRadicacionSolicitudLicencia; }
-
-    public String getNumeroLicencia() { return numeroLicencia; }
-    public void setNumeroLicencia(String numeroLicencia) { this.numeroLicencia = numeroLicencia; }
-
-    public String getFechaLicencia() { return fechaLicencia; }
-    public void setFechaLicencia(String fechaLicencia) { this.fechaLicencia = fechaLicencia; }
-
-    public String getVigenciaLicencia() { return vigenciaLicencia; }
-    public void setVigenciaLicencia(String vigenciaLicencia) { this.vigenciaLicencia = vigenciaLicencia; }
-
-    public Integer getServiciosPublicos() { return serviciosPublicos; }
-    public void setServiciosPublicos(Integer serviciosPublicos) { this.serviciosPublicos = serviciosPublicos; }
-
-    public String getFechaRadicacionAaa() { return fechaRadicacionAaa; }
-    public void setFechaRadicacionAaa(String fechaRadicacionAaa) { this.fechaRadicacionAaa = fechaRadicacionAaa; }
-
-    public String getNumRadicadoSolicitudAaa() { return numRadicadoSolicitudAaa; }
-    public void setNumRadicadoSolicitudAaa(String numRadicadoSolicitudAaa) { this.numRadicadoSolicitudAaa = numRadicadoSolicitudAaa; }
-
-    public String getFechaExpedicionAaa() { return fechaExpedicionAaa; }
-    public void setFechaExpedicionAaa(String fechaExpedicionAaa) { this.fechaExpedicionAaa = fechaExpedicionAaa; }
-
-    public String getNumDisponibilidadAaa() { return numDisponibilidadAaa; }
-    public void setNumDisponibilidadAaa(String numDisponibilidadAaa) { this.numDisponibilidadAaa = numDisponibilidadAaa; }
-
-    public Integer getVigenciaAaa() { return vigenciaAaa; }
-    public void setVigenciaAaa(Integer vigenciaAaa) { this.vigenciaAaa = vigenciaAaa; }
-
-    public String getFechaRadicacionEea() { return fechaRadicacionEea; }
-    public void setFechaRadicacionEea(String fechaRadicacionEea) { this.fechaRadicacionEea = fechaRadicacionEea; }
-
-    public String getNumRadicadoSolicitudEea() { return numRadicadoSolicitudEea; }
-    public void setNumRadicadoSolicitudEea(String numRadicadoSolicitudEea) { this.numRadicadoSolicitudEea = numRadicadoSolicitudEea; }
-
-    public String getFechaExpedicionEea() { return fechaExpedicionEea; }
-    public void setFechaExpedicionEea(String fechaExpedicionEea) { this.fechaExpedicionEea = fechaExpedicionEea; }
-
-    public String getNumDisponibilidadEea() { return numDisponibilidadEea; }
-    public void setNumDisponibilidadEea(String numDisponibilidadEea) { this.numDisponibilidadEea = numDisponibilidadEea; }
-
-    public Integer getVigenciaEea() { return vigenciaEea; }
-    public void setVigenciaEea(Integer vigenciaEea) { this.vigenciaEea = vigenciaEea; }
-
-    public String getFechaRadicacionGna() { return fechaRadicacionGna; }
-    public void setFechaRadicacionGna(String fechaRadicacionGna) { this.fechaRadicacionGna = fechaRadicacionGna; }
-
-    public String getNumRadicadoSolicitudGna() { return numRadicadoSolicitudGna; }
-    public void setNumRadicadoSolicitudGna(String numRadicadoSolicitudGna) { this.numRadicadoSolicitudGna = numRadicadoSolicitudGna; }
-
-    public String getFechaExpedicionGna() { return fechaExpedicionGna; }
-    public void setFechaExpedicionGna(String fechaExpedicionGna) { this.fechaExpedicionGna = fechaExpedicionGna; }
-
-    public String getNumDisponibilidadGna() { return numDisponibilidadGna; }
-    public void setNumDisponibilidadGna(String numDisponibilidadGna) { this.numDisponibilidadGna = numDisponibilidadGna; }
-
-    public Integer getVigenciaGna() { return vigenciaGna; }
-    public void setVigenciaGna(Integer vigenciaGna) { this.vigenciaGna = vigenciaGna; }
-
-    public Integer getProyeccionGeneracionEmpleo() { return proyeccionGeneracionEmpleo; }
-    public void setProyeccionGeneracionEmpleo(Integer proyeccionGeneracionEmpleo) { this.proyeccionGeneracionEmpleo = proyeccionGeneracionEmpleo; }
-
-    public java.time.LocalDateTime getFechaCreacion() { return fechaCreacion; }
-    public void setFechaCreacion(java.time.LocalDateTime fechaCreacion) { this.fechaCreacion = fechaCreacion; }
+    private LocalDateTime fechaCreacion;
 }

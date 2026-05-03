@@ -1,13 +1,16 @@
 package com.gestionproyectos.adapter.outbound.persistence.jpa.entity;
 
 import jakarta.persistence.*;
-import java.util.UUID;
-
+import lombok.Data;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 @Entity
 @Table(name = "DATOS_GENERALES")
+@Data
 public class DatosGeneralesEntity {
 
     @Id
@@ -61,71 +64,12 @@ public class DatosGeneralesEntity {
     private String descripcionObjetivo;
 
     @Column(name = "FECHA_CREACION")
-    private java.time.LocalDateTime fechaCreacion;
+    private LocalDateTime fechaCreacion;
 
     @Column(name = "FECHA_ACTUALIZACION")
-    private java.time.LocalDateTime fechaActualizacion;
+    private LocalDateTime fechaActualizacion;
 
     @Version
     @Column(name = "VERSION")
     private Long version;
-
-    public DatosGeneralesEntity() {}
-
-    public UUID getId() { return id; }
-    public void setId(UUID id) { this.id = id; }
-
-    public String getCodigoProyecto() { return codigoProyecto; }
-    public void setCodigoProyecto(String codigo) { this.codigoProyecto = codigo; }
-
-    public String getNombreProyecto() { return nombreProyecto; }
-    public void setNombreProyecto(String nombre) { this.nombreProyecto = nombre; }
-
-    public String getModalidadInversion() { return modalidadInversion; }
-    public void setModalidadInversion(String modalidad) { this.modalidadInversion = modalidad; }
-
-    public Long getValorTotalProyecto() { return valorTotalProyecto; }
-    public void setValorTotalProyecto(Long valor) { this.valorTotalProyecto = valor; }
-
-    public Long getValorAprobadoVigencia() { return valorAprobadoVigencia; }
-    public void setValorAprobadoVigencia(Long valor) { this.valorAprobadoVigencia = valor; }
-
-    public String getJustificacion() { return justificacion; }
-    public void setJustificacion(String justificacion) { this.justificacion = justificacion; }
-
-    public String getObjetivos() { return objetivos; }
-    public void setObjetivos(String objetivos) { this.objetivos = objetivos; }
-
-    public Integer getResolucionAEI() { return resolucionAEI; }
-    public void setResolucionAEI(Integer resolucionAEI) { this.resolucionAEI = resolucionAEI; }
-
-    public String getNumActa() { return numActa; }
-    public void setNumActa(String numActa) { this.numActa = numActa; }
-
-    public String getFechaConsejo() { return fechaConsejo; }
-    public void setFechaConsejo(String fecha) { this.fechaConsejo = fecha; }
-
-    public Integer getNumConsejeros() { return numConsejeros; }
-    public void setNumConsejeros(Integer num) { this.numConsejeros = num; }
-
-    public Integer getTiempoRecuperacion() { return tiempoRecuperacion; }
-    public void setTiempoRecuperacion(Integer tiempo) { this.tiempoRecuperacion = tiempo; }
-
-    public String getTasaDescuento() { return tasaDescuento; }
-    public void setTasaDescuento(String tasa) { this.tasaDescuento = tasa; }
-
-    public Long getNumeroBeneficiarios() { return numeroBeneficiarios; }
-    public void setNumeroBeneficiarios(Long numero) { this.numeroBeneficiarios = numero; }
-
-    public String getDescripcionObjetivo() { return descripcionObjetivo; }
-    public void setDescripcionObjetivo(String desc) { this.descripcionObjetivo = desc; }
-
-    public java.time.LocalDateTime getFechaCreacion() { return fechaCreacion; }
-    public void setFechaCreacion(java.time.LocalDateTime fecha) { this.fechaCreacion = fecha; }
-
-    public java.time.LocalDateTime getFechaActualizacion() { return fechaActualizacion; }
-    public void setFechaActualizacion(java.time.LocalDateTime fecha) { this.fechaActualizacion = fecha; }
-
-    public Long getVersion() { return version; }
-    public void setVersion(Long version) { this.version = version; }
 }

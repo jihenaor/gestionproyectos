@@ -1,13 +1,16 @@
 package com.gestionproyectos.adapter.outbound.persistence.jpa.entity;
 
 import jakarta.persistence.*;
-import java.util.UUID;
-
+import lombok.Data;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 @Entity
-@Table(name = "CRONOGRAMA")
+@Table(name = "GP_CRONOGRAMA")
+@Data
 public class CronogramaEntity {
 
     @Id
@@ -46,43 +49,5 @@ public class CronogramaEntity {
     private Integer ordenEjecucion;
 
     @Column(name = "FEC_CREACION")
-    private java.time.LocalDateTime fechaCreacion;
-
-    public CronogramaEntity() {}
-
-    public UUID getId() { return id; }
-    public void setId(UUID id) { this.id = id; }
-
-    public UUID getIdProyecto() { return idProyecto; }
-    public void setIdProyecto(UUID idProyecto) { this.idProyecto = idProyecto; }
-
-    public String getTipoActividad() { return tipoActividad; }
-    public void setTipoActividad(String tipoActividad) { this.tipoActividad = tipoActividad; }
-
-    public String getDescripcionActividad() { return descripcionActividad; }
-    public void setDescripcionActividad(String descripcionActividad) { this.descripcionActividad = descripcionActividad; }
-
-    public String getPorcentajeProyectado() { return porcentajeProyectado; }
-    public void setPorcentajeProyectado(String porcentajeProyectado) { this.porcentajeProyectado = porcentajeProyectado; }
-
-    public String getFechaInicio() { return fechaInicio; }
-    public void setFechaInicio(String fechaInicio) { this.fechaInicio = fechaInicio; }
-
-    public String getFechaTerminacion() { return fechaTerminacion; }
-    public void setFechaTerminacion(String fechaTerminacion) { this.fechaTerminacion = fechaTerminacion; }
-
-    public String getUnidadMedida() { return unidadMedida; }
-    public void setUnidadMedida(String unidadMedida) { this.unidadMedida = unidadMedida; }
-
-    public Long getCantidadProgramada() { return cantidadProgramada; }
-    public void setCantidadProgramada(Long cantidadProgramada) { this.cantidadProgramada = cantidadProgramada; }
-
-    public Long getValorProgramado() { return valorProgramado; }
-    public void setValorProgramado(Long valorProgramado) { this.valorProgramado = valorProgramado; }
-
-    public Integer getOrdenEjecucion() { return ordenEjecucion; }
-    public void setOrdenEjecucion(Integer ordenEjecucion) { this.ordenEjecucion = ordenEjecucion; }
-
-    public java.time.LocalDateTime getFechaCreacion() { return fechaCreacion; }
-    public void setFechaCreacion(java.time.LocalDateTime fechaCreacion) { this.fechaCreacion = fechaCreacion; }
+    private LocalDateTime fechaCreacion;
 }

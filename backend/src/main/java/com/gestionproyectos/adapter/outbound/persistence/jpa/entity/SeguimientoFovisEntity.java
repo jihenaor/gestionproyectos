@@ -1,13 +1,15 @@
 package com.gestionproyectos.adapter.outbound.persistence.jpa.entity;
 
 import jakarta.persistence.*;
-import java.util.UUID;
-
+import lombok.Data;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.util.UUID;
+
 @Entity
-@Table(name = "SEGUIMIENTO_FOVIS")
+@Table(name = "FV_SEGUIMIENTO")
+@Data
 public class SeguimientoFovisEntity {
 
     @Id
@@ -47,42 +49,4 @@ public class SeguimientoFovisEntity {
 
     @Column(name = "COMENTARIOS", length = 4000)
     private String comentarios;
-
-    public SeguimientoFovisEntity() {}
-
-    public UUID getId() { return id; }
-    public void setId(UUID id) { this.id = id; }
-
-    public UUID getIdProyectoFovis() { return idProyectoFovis; }
-    public void setIdProyectoFovis(UUID idProyectoFovis) { this.idProyectoFovis = idProyectoFovis; }
-
-    public Integer getAnoEjecucion() { return anoEjecucion; }
-    public void setAnoEjecucion(Integer anoEjecucion) { this.anoEjecucion = anoEjecucion; }
-
-    public Integer getMesEjecucion() { return mesEjecucion; }
-    public void setMesEjecucion(Integer mesEjecucion) { this.mesEjecucion = mesEjecucion; }
-
-    public String getTipoActividad() { return tipoActividad; }
-    public void setTipoActividad(String tipoActividad) { this.tipoActividad = tipoActividad; }
-
-    public Long getValorEjecutado() { return valorEjecutado; }
-    public void setValorEjecutado(Long valorEjecutado) { this.valorEjecutado = valorEjecutado; }
-
-    public Integer getCantidadCreditosAsignados() { return cantidadCreditosAsignados; }
-    public void setCantidadCreditosAsignados(Integer cantidadCreditosAsignados) { this.cantidadCreditosAsignados = cantidadCreditosAsignados; }
-
-    public Long getValorCreditosAsignados() { return valorCreditosAsignados; }
-    public void setValorCreditosAsignados(Long valorCreditosAsignados) { this.valorCreditosAsignados = valorCreditosAsignados; }
-
-    public String getFechaCompraLote() { return fechaCompraLote; }
-    public void setFechaCompraLote(String fechaCompraLote) { this.fechaCompraLote = fechaCompraLote; }
-
-    public Long getValorTotalCompraLote() { return valorTotalCompraLote; }
-    public void setValorTotalCompraLote(Long valorTotalCompraLote) { this.valorTotalCompraLote = valorTotalCompraLote; }
-
-    public Long getValorOtrosCostos() { return valorOtrosCostos; }
-    public void setValorOtrosCostos(Long valorOtrosCostos) { this.valorOtrosCostos = valorOtrosCostos; }
-
-    public String getComentarios() { return comentarios; }
-    public void setComentarios(String comentarios) { this.comentarios = comentarios; }
 }

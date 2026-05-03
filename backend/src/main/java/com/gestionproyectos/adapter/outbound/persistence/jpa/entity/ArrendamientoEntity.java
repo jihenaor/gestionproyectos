@@ -1,13 +1,16 @@
 package com.gestionproyectos.adapter.outbound.persistence.jpa.entity;
 
 import jakarta.persistence.*;
-import java.util.UUID;
-
+import lombok.Data;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 @Entity
-@Table(name = "ARRENDAMIENTO")
+@Table(name = "GP_ARRENDAMIENTO")
+@Data
 public class ArrendamientoEntity {
 
     @Id
@@ -43,40 +46,5 @@ public class ArrendamientoEntity {
     private String usoAutorizado;
 
     @Column(name = "FEC_CREACION")
-    private java.time.LocalDateTime fechaCreacion;
-
-    public ArrendamientoEntity() {}
-
-    public UUID getId() { return id; }
-    public void setId(UUID id) { this.id = id; }
-
-    public UUID getIdProyecto() { return idProyecto; }
-    public void setIdProyecto(UUID idProyecto) { this.idProyecto = idProyecto; }
-
-    public String getFecCertTradicionLibertad() { return fecCertTradicionLibertad; }
-    public void setFecCertTradicionLibertad(String fecCertTradicionLibertad) { this.fecCertTradicionLibertad = fecCertTradicionLibertad; }
-
-    public String getFecAvaluo() { return fecAvaluo; }
-    public void setFecAvaluo(String fecAvaluo) { this.fecAvaluo = fecAvaluo; }
-
-    public String getPerito() { return perito; }
-    public void setPerito(String perito) { this.perito = perito; }
-
-    public Long getValorAvaluo() { return valorAvaluo; }
-    public void setValorAvaluo(Long valorAvaluo) { this.valorAvaluo = valorAvaluo; }
-
-    public Long getValCanonMensual() { return valCanonMensual; }
-    public void setValCanonMensual(Long valCanonMensual) { this.valCanonMensual = valCanonMensual; }
-
-    public Integer getTmpContrato() { return tmpContrato; }
-    public void setTmpContrato(Integer tmpContrato) { this.tmpContrato = tmpContrato; }
-
-    public String getDestinacionInmueble() { return destinacionInmueble; }
-    public void setDestinacionInmueble(String destinacionInmueble) { this.destinacionInmueble = destinacionInmueble; }
-
-    public String getUsoAutorizado() { return usoAutorizado; }
-    public void setUsoAutorizado(String usoAutorizado) { this.usoAutorizado = usoAutorizado; }
-
-    public java.time.LocalDateTime getFechaCreacion() { return fechaCreacion; }
-    public void setFechaCreacion(java.time.LocalDateTime fechaCreacion) { this.fechaCreacion = fechaCreacion; }
+    private LocalDateTime fechaCreacion;
 }

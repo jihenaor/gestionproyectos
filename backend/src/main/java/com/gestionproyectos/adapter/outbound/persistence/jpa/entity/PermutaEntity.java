@@ -1,13 +1,16 @@
 package com.gestionproyectos.adapter.outbound.persistence.jpa.entity;
 
 import jakarta.persistence.*;
-import java.util.UUID;
-
+import lombok.Data;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 @Entity
-@Table(name = "PERMUTA")
+@Table(name = "GP_PERMUTA")
+@Data
 public class PermutaEntity {
 
     @Id
@@ -58,55 +61,5 @@ public class PermutaEntity {
     private String destinacionRecursos;
 
     @Column(name = "FEC_CREACION")
-    private java.time.LocalDateTime fechaCreacion;
-
-    public PermutaEntity() {}
-
-    public UUID getId() { return id; }
-    public void setId(UUID id) { this.id = id; }
-
-    public UUID getIdProyecto() { return idProyecto; }
-    public void setIdProyecto(UUID idProyecto) { this.idProyecto = idProyecto; }
-
-    public String getFecCertTradicionLibertad() { return fecCertTradicionLibertad; }
-    public void setFecCertTradicionLibertad(String fecCertTradicionLibertad) { this.fecCertTradicionLibertad = fecCertTradicionLibertad; }
-
-    public String getFecAvaluoRecibe() { return fecAvaluoRecibe; }
-    public void setFecAvaluoRecibe(String fecAvaluoRecibe) { this.fecAvaluoRecibe = fecAvaluoRecibe; }
-
-    public String getFecAvaluoEntrega() { return fecAvaluoEntrega; }
-    public void setFecAvaluoEntrega(String fecAvaluoEntrega) { this.fecAvaluoEntrega = fecAvaluoEntrega; }
-
-    public String getAvaluadorRecibe() { return avaluadorRecibe; }
-    public void setAvaluadorRecibe(String avaluadorRecibe) { this.avaluadorRecibe = avaluadorRecibe; }
-
-    public String getAvaluadorEntrega() { return avaluadorEntrega; }
-    public void setAvaluadorEntrega(String avaluadorEntrega) { this.avaluadorEntrega = avaluadorEntrega; }
-
-    public Long getValAvaluoRecibe() { return valAvaluoRecibe; }
-    public void setValAvaluoRecibe(Long valAvaluoRecibe) { this.valAvaluoRecibe = valAvaluoRecibe; }
-
-    public Long getValAvaluoEntrega() { return valAvaluoEntrega; }
-    public void setValAvaluoEntrega(Long valAvaluoEntrega) { this.valAvaluoEntrega = valAvaluoEntrega; }
-
-    public String getDestinacionInmueble() { return destinacionInmueble; }
-    public void setDestinacionInmueble(String destinacionInmueble) { this.destinacionInmueble = destinacionInmueble; }
-
-    public String getUsoAutorizado() { return usoAutorizado; }
-    public void setUsoAutorizado(String usoAutorizado) { this.usoAutorizado = usoAutorizado; }
-
-    public Long getValLibros() { return valLibros; }
-    public void setValLibros(Long valLibros) { this.valLibros = valLibros; }
-
-    public Long getUtilidadPerdida() { return utilidadPerdida; }
-    public void setUtilidadPerdida(Long utilidadPerdida) { this.utilidadPerdida = utilidadPerdida; }
-
-    public String getOrigenRecursos() { return origenRecursos; }
-    public void setOrigenRecursos(String origenRecursos) { this.origenRecursos = origenRecursos; }
-
-    public String getDestinacionRecursos() { return destinacionRecursos; }
-    public void setDestinacionRecursos(String destinacionRecursos) { this.destinacionRecursos = destinacionRecursos; }
-
-    public java.time.LocalDateTime getFechaCreacion() { return fechaCreacion; }
-    public void setFechaCreacion(java.time.LocalDateTime fechaCreacion) { this.fechaCreacion = fechaCreacion; }
+    private LocalDateTime fechaCreacion;
 }

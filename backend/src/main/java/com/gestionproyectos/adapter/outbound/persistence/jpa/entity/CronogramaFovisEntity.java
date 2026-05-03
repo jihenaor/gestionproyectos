@@ -1,13 +1,15 @@
 package com.gestionproyectos.adapter.outbound.persistence.jpa.entity;
 
 import jakarta.persistence.*;
-import java.util.UUID;
-
+import lombok.Data;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.util.UUID;
+
 @Entity
-@Table(name = "CRONOGRAMA_FOVIS")
+@Table(name = "FV_CRONOGRAMA")
+@Data
 public class CronogramaFovisEntity {
 
     @Id
@@ -32,27 +34,4 @@ public class CronogramaFovisEntity {
 
     @Column(name = "VALOR_CREDITOS_PROYECTADOS")
     private Long valorCreditosProyectados;
-
-    public CronogramaFovisEntity() {}
-
-    public UUID getId() { return id; }
-    public void setId(UUID id) { this.id = id; }
-
-    public UUID getIdProyectoFovis() { return idProyectoFovis; }
-    public void setIdProyectoFovis(UUID idProyectoFovis) { this.idProyectoFovis = idProyectoFovis; }
-
-    public Integer getAnoEjecucion() { return anoEjecucion; }
-    public void setAnoEjecucion(Integer anoEjecucion) { this.anoEjecucion = anoEjecucion; }
-
-    public Integer getMesEjecucion() { return mesEjecucion; }
-    public void setMesEjecucion(Integer mesEjecucion) { this.mesEjecucion = mesEjecucion; }
-
-    public Integer getPorcentajeProyectado() { return porcentajeProyectado; }
-    public void setPorcentajeProyectado(Integer porcentajeProyectado) { this.porcentajeProyectado = porcentajeProyectado; }
-
-    public Integer getCantidadCreditosProyectados() { return cantidadCreditosProyectados; }
-    public void setCantidadCreditosProyectados(Integer cantidadCreditosProyectados) { this.cantidadCreditosProyectados = cantidadCreditosProyectados; }
-
-    public Long getValorCreditosProyectados() { return valorCreditosProyectados; }
-    public void setValorCreditosProyectados(Long valorCreditosProyectados) { this.valorCreditosProyectados = valorCreditosProyectados; }
 }

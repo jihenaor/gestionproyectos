@@ -1,14 +1,16 @@
 package com.gestionproyectos.adapter.outbound.persistence.jpa.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
-import java.util.UUID;
-
+import lombok.Data;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 @Entity
 @Table(name = "GP_DATOS_GENERALES")
+@Data
 public class GpDatosGeneralesEntity {
 
     @Id
@@ -39,33 +41,4 @@ public class GpDatosGeneralesEntity {
 
     @Column(name = "FEC_MODIFICACION")
     private LocalDateTime fecModificacion;
-
-    public GpDatosGeneralesEntity() {}
-
-    public UUID getId() { return id; }
-    public void setId(UUID id) { this.id = id; }
-
-    public UUID getIdProyecto() { return idProyecto; }
-    public void setIdProyecto(UUID idProyecto) { this.idProyecto = idProyecto; }
-
-    public String getObjetivosEspecificos() { return objetivosEspecificos; }
-    public void setObjetivosEspecificos(String objetivosEspecificos) { this.objetivosEspecificos = objetivosEspecificos; }
-
-    public String getDescripcionObjetivo() { return descripcionObjetivo; }
-    public void setDescripcionObjetivo(String descripcionObjetivo) { this.descripcionObjetivo = descripcionObjetivo; }
-
-    public Integer getTiempoRecuperacion() { return tiempoRecuperacion; }
-    public void setTiempoRecuperacion(Integer tiempoRecuperacion) { this.tiempoRecuperacion = tiempoRecuperacion; }
-
-    public String getTasaDescuento() { return tasaDescuento; }
-    public void setTasaDescuento(String tasaDescuento) { this.tasaDescuento = tasaDescuento; }
-
-    public Long getNumeroBeneficiarios() { return numeroBeneficiarios; }
-    public void setNumeroBeneficiarios(Long numeroBeneficiarios) { this.numeroBeneficiarios = numeroBeneficiarios; }
-
-    public LocalDateTime getFecCreacion() { return fecCreacion; }
-    public void setFecCreacion(LocalDateTime fecCreacion) { this.fecCreacion = fecCreacion; }
-
-    public LocalDateTime getFecModificacion() { return fecModificacion; }
-    public void setFecModificacion(LocalDateTime fecModificacion) { this.fecModificacion = fecModificacion; }
 }

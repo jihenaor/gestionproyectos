@@ -1,13 +1,15 @@
 package com.gestionproyectos.adapter.outbound.persistence.jpa.entity;
 
 import jakarta.persistence.*;
-import java.util.UUID;
-
+import lombok.Data;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.util.UUID;
+
 @Entity
-@Table(name = "CREDITOS_HIPOTECARIOS")
+@Table(name = "FV_CREDITOS_HIPOTECARIOS")
+@Data
 public class CreditosHipotecariosEntity {
 
     @Id
@@ -41,36 +43,4 @@ public class CreditosHipotecariosEntity {
 
     @Column(name = "PROCESOS_ADMINISTRATIVOS", length = 4000)
     private String procesosAdministrativos;
-
-    public CreditosHipotecariosEntity() {}
-
-    public UUID getId() { return id; }
-    public void setId(UUID id) { this.id = id; }
-
-    public UUID getIdProyectoFovis() { return idProyectoFovis; }
-    public void setIdProyectoFovis(UUID idProyectoFovis) { this.idProyectoFovis = idProyectoFovis; }
-
-    public Long getValorIndividualCreditos() { return valorIndividualCreditos; }
-    public void setValorIndividualCreditos(Long valorIndividualCreditos) { this.valorIndividualCreditos = valorIndividualCreditos; }
-
-    public String getSistemaAmortizacion() { return sistemaAmortizacion; }
-    public void setSistemaAmortizacion(String sistemaAmortizacion) { this.sistemaAmortizacion = sistemaAmortizacion; }
-
-    public String getTasaInteres() { return tasaInteres; }
-    public void setTasaInteres(String tasaInteres) { this.tasaInteres = tasaInteres; }
-
-    public String getPuntosAdicionales() { return puntosAdicionales; }
-    public void setPuntosAdicionales(String puntosAdicionales) { this.puntosAdicionales = puntosAdicionales; }
-
-    public Integer getPlazoFinanciacion() { return plazoFinanciacion; }
-    public void setPlazoFinanciacion(Integer plazoFinanciacion) { this.plazoFinanciacion = plazoFinanciacion; }
-
-    public String getRequisitosGarantias() { return requisitosGarantias; }
-    public void setRequisitosGarantias(String requisitosGarantias) { this.requisitosGarantias = requisitosGarantias; }
-
-    public String getEstrategiasRecuperacion() { return estrategiasRecuperacion; }
-    public void setEstrategiasRecuperacion(String estrategiasRecuperacion) { this.estrategiasRecuperacion = estrategiasRecuperacion; }
-
-    public String getProcesosAdministrativos() { return procesosAdministrativos; }
-    public void setProcesosAdministrativos(String procesosAdministrativos) { this.procesosAdministrativos = procesosAdministrativos; }
 }
