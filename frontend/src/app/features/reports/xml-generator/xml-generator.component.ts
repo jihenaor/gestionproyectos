@@ -29,6 +29,31 @@ interface ArchivoGenerado {
   tamano: string;
 }
 
+/** Periodo por defecto si CIEF no responde o hasta que el usuario pulse «Cargar Datos». */
+const PERIODO_SUPERSUBSIDIO_FALLBACK: PeriodoSupersubsidio = {
+  codigo: 1,
+  codigoPeriodo: '202605',
+  fechaInicial: 20260501,
+  fechaFinal: 20260531,
+  descripcion: 'Mayo 2026',
+  periodicidad: 'M',
+  periodicidad2: 'MENSUAL',
+  motivoCodigo: '01',
+  fechaLimiteReporte: 0,
+  fechaLimiteRevision: 0,
+  anio: 2026,
+  mes: 5,
+  codigoAnterior: null,
+  solicitanteCodigo: null,
+  codigoPeriodoTipo: null,
+  codigoInfraestructura: null,
+  motivoCodigoXml: null,
+  codigoPeriodoLq: '202605',
+  nombreMes: 'MAYO',
+  periodoAaaaMm: '2026-05',
+  periodoActivo: 'S'
+};
+
 const ESTRUCTURAS_XML_INIT: EstructuraXml[] = [
   { codigo: 'P-001A', nombreXml: 'PROYECTOS_NUEVOS', nombreArchivo: 'CCF044_001A_PERC.xml', seleccionado: true },
   { codigo: 'P-002A', nombreXml: 'CRONOGRAMA_INICIAL_PROYECTO', nombreArchivo: 'CCF044_002A_PERC.xml', seleccionado: true },
@@ -630,45 +655,33 @@ export class XmlGeneratorComponent implements OnInit {
 
   ngOnInit(): void {
     this.estructurasXml.set(ESTRUCTURAS_XML_INIT);
-    this.cargarPeriodos();
+    // No llamar a CIEF aquí: evita periodos-reporte al montar la ruta (p. ej. tras login con returnUrl).
+    this.setFallbackPeriodos();
   }
 
-  cargarPeriodos(): void {
+  private setFallbackPeriodos(): void {
+    this.periodosDisponibles.set([PERIODO_SUPERSUBSIDIO_FALLBACK]);
+    this.periodoSeleccionado = PERIODO_SUPERSUBSIDIO_FALLBACK.codigoPeriodo;
+    this.periodoActual.set(PERIODO_SUPERSUBSIDIO_FALLBACK.codigoPeriodo);
+  }
+
+  /**
+   * Obtiene periodos desde CIEF y ejecuta `then` al terminar (éxito o error con fallback).
+   * La petición se dispara desde «Cargar Datos», no al abrir la pantalla.
+   */
+  private cargarPeriodosDesdeCief(then: () => void): void {
     this.apiService.getPeriodosSupersubsidio('01').subscribe({
       next: (periodos) => {
         if (periodos && periodos.length > 0) {
           this.periodosDisponibles.set(periodos);
           this.periodoSeleccionado = periodos[0].codigoPeriodo;
           this.periodoActual.set(periodos[0].codigoPeriodo);
+        } else {
+          this.setFallbackPeriodos();
         }
       },
-      error: () => {
-        this.periodosDisponibles.set([{
-          codigo: 1,
-          codigoPeriodo: '202605',
-          fechaInicial: 20260501,
-          fechaFinal: 20260531,
-          descripcion: 'Mayo 2026',
-          periodicidad: 'M',
-          periodicidad2: 'MENSUAL',
-          motivoCodigo: '01',
-          fechaLimiteReporte: 0,
-          fechaLimiteRevision: 0,
-          anio: 2026,
-          mes: 5,
-          codigoAnterior: null,
-          solicitanteCodigo: null,
-          codigoPeriodoTipo: null,
-          codigoInfraestructura: null,
-          motivoCodigoXml: null,
-          codigoPeriodoLq: '202605',
-          nombreMes: 'MAYO',
-          periodoAaaaMm: '2026-05',
-          periodoActivo: 'S'
-        }]);
-        this.periodoSeleccionado = '202605';
-        this.periodoActual.set('202605');
-      }
+      error: () => this.setFallbackPeriodos(),
+      complete: () => then()
     });
   }
 
@@ -696,7 +709,7 @@ export class XmlGeneratorComponent implements OnInit {
 
   cargarTodo(): void {
     this.cargandoProyectos.set(true);
-    this.cargarProyectos();
+    this.cargarPeriodosDesdeCief(() => this.cargarProyectos());
   }
 
   cargarProyectos(): void {

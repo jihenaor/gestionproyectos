@@ -185,6 +185,11 @@ export class LoginComponent implements OnInit {
     if (!raw) return def;
     if (!raw.startsWith('/')) return def;
     if (raw === '/login' || raw.startsWith('/login?')) return def;
+    const path = raw.split('?')[0].split('#')[0];
+    // Tras login siempre inicio: no reabrir generador XML (evita carga CIEF y no es la ruta por defecto).
+    if (path === '/xml-generator' || path.startsWith('/xml-generator/')) {
+      return def;
+    }
     return raw;
   }
 }
