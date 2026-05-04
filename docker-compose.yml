@@ -13,7 +13,7 @@ services:
     networks:
       - cief-net
     environment:
-      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-prod}
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-as400}
       # Perfil local (H2): no necesita variables DB. Perfil as400: DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASS.
       - DB_HOST=${DB_HOST:-10.25.2.212}
       - DB_PORT=${DB_PORT:-446}
